@@ -24,7 +24,7 @@ I am a undergradute student at Huazhong University of Science and Technology. My
 
 # 📝 Publications 
 
-* Gui, Yi and Li, Zhen and Zhang, Zhongyi and Wang, Guohao and Lv, Tianpeng and Jiang, Gaoyang and **Liu, Yi** and Chen, Dongping and Wan, Yao and Zhang, Hongyu and others. (2025). **LaTCoder: Converting Webpage Design to Code with Layout-as-Thought**. In *Proceedings of the 31st ACM SIGKDD Conference on Knowledge Discovery and Data Mining V. 2*, pp. 721-732. [[PDF]]([link-to-your-pdf.pdf](https://arxiv.org/pdf/2508.03560)) [[DOI]]([link-to-doi](https://doi.org/10.1145/3711896.3737016))
+*Yi Gui, Zhen Li, Zhongyi Zhang, Guohao Wang, Tianpeng Lv, Gaoyang Jiang, **Yi Liu**, Dongping Chen, Yao Wan, Hongyu Zhang, Wenbin Jiang, Xuanhua Shi, Hai Jin. (2025). **LaTCoder: Converting Webpage Design to Code with Layout-as-Thought**. In *Proceedings of the 31st ACM SIGKDD Conference on Knowledge Discovery and Data Mining V. 2*, pp. 721-732. [[PDF]]([link-to-your-pdf.pdf](https://arxiv.org/pdf/2508.03560)) [[DOI]]([link-to-doi](https://doi.org/10.1145/3711896.3737016))
 
 # 🎖 Honors and Awards
 
