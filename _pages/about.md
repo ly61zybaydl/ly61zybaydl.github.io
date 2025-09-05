@@ -26,11 +26,6 @@ I am a undergradute student at Huazhong University of Science and Technology. My
 
 
 
-
-
-**Kaiming He**, Xiangyu Zhang, Shaoqing Ren, Jian Sun
-
-
 </div>
 </div>
 
