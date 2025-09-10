@@ -17,7 +17,7 @@ redirect_from:
 
 <span class='anchor' id='about-me'></span>
 
-I am a undergradute student at Huazhong University of Science and Technology. My research interests primarily focus on **machine learning**,**deep learning**,**large language model**,**agent** and **computer vision**.
+I am a undergradute student at Huazhong University of Science and Technology. My research interests primarily focus on **machine learning**,**deep learning**,**large language model**,**agent** and **computer vision**.I want to be a person searching for fun,in spite of not now.
 
 
 # 🔥 News
