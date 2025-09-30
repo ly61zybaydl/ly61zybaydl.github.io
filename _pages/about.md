@@ -34,7 +34,8 @@ Hi, I am YiLiu(刘亿），a undergradute student at Huazhong University of Scie
 
 *Yi Gui, Zhen Li, Zhongyi Zhang, Guohao Wang, Tianpeng Lv, Gaoyang Jiang, **Yi Liu**, Dongping Chen, Yao Wan, Hongyu Zhang, Wenbin Jiang, Xuanhua Shi, Hai Jin.In *Proceedings of the 31st ACM SIGKDD Conference on Knowledge Discovery and Data Mining V. 2*, pp. 721-732.
 
-
+</div>
+</div>
 
 # 🎖 Honors and Awards
 
