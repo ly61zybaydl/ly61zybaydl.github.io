@@ -36,11 +36,6 @@ Hi, I am YiLiu(刘亿），a undergradute student at Huazhong University of Scie
 
 
 
-</div>
-</div>
-</div>
-</div>
-
 # 🎖 Honors and Awards
 
 
