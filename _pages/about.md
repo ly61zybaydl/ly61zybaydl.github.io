@@ -16,8 +16,9 @@ redirect_from:
 {% assign url = gsDataBaseUrl | append: "google-scholar-stats/gs_data_shieldsio.json" %}
 
 <span class='anchor' id='about-me'></span>
+# About me
 
-I am a undergradute student at Huazhong University of Science and Technology. My research interests primarily focus on **machine learning**,**deep learning**,**large language model**,**agent** and **computer vision**.I want to be a person searching for fun,in spite of not now.
+Hi, I am YiLiu(刘亿），a undergradute student at Huazhong University of Science and Technology. My research interests primarily focus on **machine learning**,**deep learning**,**large language model**,**agent** and **computer vision**. I want to be a person searching for fun,in spite of not now. I am looking forward a PHD in 27 fall.
 
 
 # 🔥 News
