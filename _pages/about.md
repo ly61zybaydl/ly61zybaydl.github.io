@@ -27,7 +27,7 @@ Hi, I am YiLiu(刘亿），a undergradute student at Huazhong University of Scie
 
 *Yi Gui, Zhen Li, Zhongyi Zhang, Guohao Wang, Tianpeng Lv, Gaoyang Jiang, **Yi Liu**, Dongping Chen, Yao Wan, Hongyu Zhang, Wenbin Jiang, Xuanhua Shi, Hai Jin. (2025). **LaTCoder: Converting Webpage Design to Code with Layout-as-Thought**. In *Proceedings of the 31st ACM SIGKDD Conference on Knowledge Discovery and Data Mining V. 2*, pp. 721-732. [[PDF]](https://arxiv.org/pdf/2508.03560) [[DOI]](https://doi.org/10.1145/3711896.3737016)
 
-<div class='paper-box'><div class='paper-box-image'><div><div class="badge">ICLR 2025</div><img src='images/LaTCoder.png' alt="sym" width="100%"></div></div>
+<div class='paper-box'><div class='paper-box-image'><div><div class="badge">SIGKDD 2025</div><img src='images/LaTCoder.png' alt="sym" width="50%"></div></div>
 <div class='paper-box-text' markdown="1">
 
 [LaTCoder: Converting Webpage Design to Code with Layout-as-Thought](https://arxiv.org/pdf/2508.03560) [[DOI]](https://doi.org/10.1145/3711896.3737016)
@@ -36,7 +36,10 @@ Hi, I am YiLiu(刘亿），a undergradute student at Huazhong University of Scie
 
 
 
-
+</div>
+</div>
+</div>
+</div>
 
 # 🎖 Honors and Awards
 
