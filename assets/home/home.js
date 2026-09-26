@@ -72,7 +72,10 @@
     'exp.d4': '2023 年 9 月 — 2027 年 6 月（预计）', 'exp.g4': '教育经历', 'exp.t4': '人工智能 · 本科',
     'exp.o4': '华中科技大学 · 中国武汉',
 
-    'pub.h': '论文', 'pub.fa': '全部', 'pub.ff': '一作', 'pub.fl': 'LLM 与 RAG', 'pub.fc': '代码生成',
+    'pub.h': '论文与项目', 'pub.fa': '全部', 'pub.ff': '一作', 'pub.fl': 'LLM 与 RAG', 'pub.fc': '代码生成', 'pub.fo': '开源',
+    'pub.v3': '开源项目',
+    'pub.s3': '面向 QA / 测试人员的工具：把结构化的 Word 需求文档自动转换为 XMind 测试用例思维导图。默认通过 <strong>Ollama</strong> 运行本地模型，实现 100% 本地化、保护隐私的工作流，也可选用 OrcaRouter 托管模型。已受 OrcaRouter 网关邀请收录，并受邀在 Human-Agent Society 的 <strong>Reef</strong> 上发布与迭代测试。',
+    'pub.role3': '作者与维护者',
     'pub.v1': 'AAAI 2027 · 在审',
     'pub.s1': '<strong>ActionRAG</strong> 用一个路由器根据问题复杂度，在五种 RAG 执行策略中自适应选择：减少简单问题上的无谓检索开销，同时为复杂的长上下文推理保留更强的知识增强能力。',
     'pub.role1': '第一作者', 'pub.soon': '预印本即将发布',
@@ -85,7 +88,8 @@
 
     'con.e': '<span class="dot"></span> 欢迎合作 · 2027 年秋起在华科攻读硕士',
     'con.t': '让大模型想得<br><span class="grad">更聪明，而不只是更久。</span>',
-    'foot.hint': '小提示：按 <kbd>t</kbd> 切换深浅色，<kbd>l</kbd> 切换 English'
+    'foot.hint': '小提示：按 <kbd>t</kbd> 切换深浅色，<kbd>l</kbd> 切换 English，<kbd>m</kbd> 播放音乐',
+    'foot.music': '背景音乐：<a href="https://incompetech.com/music/royalty-free/music.html">Gymnopédie No. 1</a> · Erik Satie 作曲，Kevin MacLeod 演奏 · <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>'
   };
 
   var lang = root.getAttribute('lang') === 'zh-CN' ? 'zh' : 'en';
@@ -120,7 +124,77 @@
     if (/INPUT|TEXTAREA|SELECT/.test(tag) || (e.target && e.target.isContentEditable)) return;
     if (e.key === 't' || e.key === 'T') setTheme(isDark() ? 'light' : 'dark');
     if (e.key === 'l' || e.key === 'L') toggleLang();
+    if (e.key === 'm' || e.key === 'M') { var b = $('#bgm'); if (b) b.click(); }
   });
+
+  /* ---------------- background music ---------------- */
+  (function () {
+    var btn = $('#bgm');
+    if (!btn) return;
+    var stateEl = $('.bgm__state', btn);
+    var audio = null, wantOn = false, fading = 0, status = 'idle';
+    var T = {
+      en: { idle: 'tap to play', loading: 'loading…', playing: 'now playing', paused: 'paused', error: 'unavailable' },
+      zh: { idle: '点击播放', loading: '加载中…', playing: '正在播放', paused: '已暂停', error: '暂不可用' }
+    };
+    function render() {
+      stateEl.textContent = T[isZh() ? 'zh' : 'en'][status];
+      btn.classList.toggle('is-playing', status === 'playing');
+      btn.classList.toggle('is-loading', status === 'loading');
+      btn.setAttribute('aria-pressed', status === 'playing' ? 'true' : 'false');
+      btn.setAttribute('aria-label', (status === 'playing' ? 'Pause' : 'Play') + ' background music');
+    }
+    function fadeTo(target, done) {
+      cancelAnimationFrame(fading);
+      var from = audio.volume, start = performance.now(), dur = 1200;
+      (function step(now) {
+        var t = clamp((now - start) / dur, 0, 1);
+        try { audio.volume = from + (target - from) * t; } catch (e) { t = 1; }
+        if (t < 1) fading = requestAnimationFrame(step);
+        else if (done) done();
+      })(start);
+    }
+    function ensure() {
+      if (audio) return audio;
+      audio = new Audio(btn.getAttribute('data-src'));
+      audio.loop = true;
+      audio.preload = 'auto';
+      try { audio.volume = 0; } catch (e) {}
+      audio.addEventListener('playing', function () { if (wantOn) { status = 'playing'; render(); fadeTo(0.45); } });
+      audio.addEventListener('waiting', function () { if (wantOn) { status = 'loading'; render(); } });
+      audio.addEventListener('error', function () { status = 'error'; wantOn = false; render(); });
+      return audio;
+    }
+    function play() {
+      wantOn = true; store('bgm', 'on');
+      var a = ensure();
+      cancelAnimationFrame(fading);
+      if (!a.paused) { status = 'playing'; render(); fadeTo(0.45); return; }
+      status = 'loading'; render();
+      var p = a.play();
+      if (p && p.catch) p.catch(function () { if (wantOn) { wantOn = false; status = 'paused'; render(); } });
+    }
+    function pause() {
+      wantOn = false; store('bgm', 'off');
+      status = 'paused'; render();
+      if (!audio) return;
+      if (audio.paused || audio.volume === 0) { audio.pause(); return; }
+      fadeTo(0, function () { audio.pause(); });
+    }
+    btn.addEventListener('click', function () { wantOn ? pause() : play(); });
+    document.addEventListener('langchange', render);
+
+    /* Return visits: browsers block autoplay, so resume on the first gesture instead. */
+    var remembered = false;
+    try { remembered = localStorage.getItem('bgm') === 'on'; } catch (e) {}
+    if (remembered) {
+      var off = function () { window.removeEventListener('pointerdown', kick); window.removeEventListener('keydown', kick); };
+      var kick = function (e) { off(); if (!btn.contains(e.target) && !wantOn) play(); };
+      window.addEventListener('pointerdown', kick);
+      window.addEventListener('keydown', kick);
+    }
+    render();
+  })();
 
   /* ---------------- scroll: progress, nav state, timeline fill ---------------- */
   var nav = $('#nav');

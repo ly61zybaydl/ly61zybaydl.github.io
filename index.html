@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-  <link rel="stylesheet" href="assets/home/home.css?v=20260926">
+  <link rel="stylesheet" href="assets/home/home.css?v=20260926b">
   <script>
     /* Apply the saved theme / language before first paint to avoid a flash. */
     (function () {
@@ -226,13 +226,14 @@
     <section class="section" id="publications">
       <div class="section__head reveal">
         <span class="section__num">03</span>
-        <h2 data-i18n="pub.h">Publications</h2>
+        <h2 data-i18n="pub.h">Publications &amp; Projects</h2>
       </div>
-      <div class="filters reveal" role="group" aria-label="Filter publications">
+      <div class="filters reveal" role="group" aria-label="Filter publications and projects">
         <button data-i18n="pub.fa" class="filter is-active" type="button" data-filter="all">All</button>
         <button data-i18n="pub.ff" class="filter" type="button" data-filter="first">First author</button>
         <button data-i18n="pub.fl" class="filter" type="button" data-filter="llm">LLM &amp; RAG</button>
         <button data-i18n="pub.fc" class="filter" type="button" data-filter="code">Code generation</button>
+        <button data-i18n="pub.fo" class="filter" type="button" data-filter="oss">Open source</button>
       </div>
 
       <div class="pubs" id="pubs">
@@ -276,6 +277,34 @@
               <span data-i18n="pub.role2" class="pub__role">Co-author</span>
               <a href="https://arxiv.org/pdf/2508.03560">PDF</a>
               <a href="https://doi.org/10.1145/3711896.3737016">DOI</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="pub reveal" data-tags="oss llm">
+          <div class="pub__img pub__img--fig">
+            <svg class="fig" viewBox="0 0 320 160" role="img" aria-label="Word2Xmind: a Word requirements document passes through a local LLM and becomes an XMind mind map">
+              <g class="fig__box"><rect x="8" y="58" width="76" height="44" rx="10"/><text x="46" y="76" text-anchor="middle">requirements</text><text x="46" y="91" text-anchor="middle">.docx</text></g>
+              <path class="fig__edge" d="M84 80 H112"/>
+              <g class="fig__box fig__box--router"><rect x="112" y="58" width="80" height="44" rx="11"/><text x="152" y="76" text-anchor="middle">local LLM</text><text x="152" y="91" text-anchor="middle">Ollama</text></g>
+              <path class="fig__edge" d="M192 80 H220"/>
+              <g class="fig__pill fig__pill--root"><rect x="220" y="69" width="48" height="22" rx="11"/><text x="244" y="84" text-anchor="middle">.xmind</text></g>
+              <path class="fig__edge" d="M268 80 C282 80 282 30 296 30"/>
+              <path class="fig__edge" d="M268 80 H296"/>
+              <path class="fig__edge" d="M268 80 C282 80 282 130 296 130"/>
+              <circle class="fig__leaf" cx="300" cy="30" r="4.5"/><circle class="fig__leaf" cx="300" cy="80" r="4.5"/><circle class="fig__leaf" cx="300" cy="130" r="4.5"/>
+              <path class="fig__twig" d="M300 30 L311 20 M300 30 L311 40 M300 80 L311 70 M300 80 L311 90 M300 130 L311 120 M300 130 L311 140"/>
+            </svg>
+            <span data-i18n="pub.v3" class="venue venue--oss">Open source</span>
+          </div>
+          <div class="pub__body">
+            <h3>Word2Xmind LocalLLM: Turning Word Requirements into XMind Test-Case Mind Maps with a Local LLM</h3>
+            <p class="pub__authors"><b>Yi Liu</b> · Python · MIT license</p>
+            <p data-i18n="pub.s3" class="pub__summary">A tool for QA and test engineers that converts structured Word requirement documents into XMind-compatible test-case mind maps. It runs models locally through <strong>Ollama</strong> for a 100% on-premise, privacy-preserving workflow, with OrcaRouter available as an opt-in hosted backend. Invited for inclusion by the OrcaRouter gateway and for release and iteration on <strong>Reef</strong> by the Human-Agent Society.</p>
+            <div class="pub__links">
+              <span data-i18n="pub.role3" class="pub__role">Author &amp; maintainer</span>
+              <a href="https://github.com/ly61zybaydl/word2xmind_LocalLLM">GitHub</a>
+              <a href="https://github.com/Human-Agent-Society/reef">Reef</a>
             </div>
           </div>
         </article>
@@ -338,10 +367,21 @@
   </main>
 
   <footer class="footer">
-    <span>© <span id="year">2026</span> Yi Liu · 刘亿</span>
-    <span data-i18n="foot.hint" class="footer__hint">psst — press <kbd>t</kbd> for dark mode, <kbd>l</kbd> for 中文</span>
+    <div class="footer__row">
+      <span>© <span id="year">2026</span> Yi Liu · 刘亿</span>
+      <span data-i18n="foot.hint" class="footer__hint">psst — press <kbd>t</kbd> for dark mode, <kbd>l</kbd> for 中文, <kbd>m</kbd> for music</span>
+    </div>
+    <p data-i18n="foot.music" class="footer__music">Background music: <a href="https://incompetech.com/music/royalty-free/music.html">Gymnopédie No. 1</a> · composed by Erik Satie, performed by Kevin MacLeod · <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></p>
   </footer>
 
-  <script src="assets/home/home.js?v=20260926"></script>
+  <button class="bgm" id="bgm" type="button" aria-pressed="false" aria-label="Play background music" data-src="assets/audio/gymnopedie-no1.mp3">
+    <span class="bgm__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span class="bgm__text">
+      <span class="bgm__title">Gymnopédie No. 1</span>
+      <span class="bgm__state">Tap to play</span>
+    </span>
+  </button>
+
+  <script src="assets/home/home.js?v=20260926b"></script>
 </body>
 </html>
