@@ -18,7 +18,7 @@ redirect_from:
 <span class='anchor' id='about-me'></span>
 # About me
 
-Hi, I am YiLiu(刘亿），a undergradute student at Huazhong University of Science and Technology. My research interests primarily focus on **machine learning**,**deep learning**,**large language model**,**agent** and **computer vision**. I want to be a person searching for fun,in spite of not now. I am looking forward a PHD in 27 fall.
+Hi, I am YiLiu(刘亿），a undergradute student at Huazhong University of Science and Technology. My research interests primarily focus on **machine learning**,**deep learning**,**large language model**,**agent** and **computer vision**. I want to be a person searching for fun,in spite of not now. In Fall 2027, I will begin my master's studies at the School of Computer Science and Technology, Huazhong University of Science and Technology, under the supervision of [Prof. Yao Wan](https://wanyao.me/).
 
 
 # 🔥 News
