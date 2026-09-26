@@ -89,7 +89,7 @@
     'con.e': '<span class="dot"></span> 欢迎合作 · 2027 年秋起在华科攻读硕士',
     'con.t': '让大模型想得<br><span class="grad">更聪明，而不只是更久。</span>',
     'foot.hint': '小提示：按 <kbd>t</kbd> 切换深浅色，<kbd>l</kbd> 切换 English，<kbd>m</kbd> 播放音乐',
-    'foot.music': '背景音乐：<a href="https://incompetech.com/music/royalty-free/music.html">Gymnopédie No. 1</a> · Erik Satie 作曲，Kevin MacLeod 演奏 · <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>'
+    'foot.music': '背景音乐：《去年夏天》· 夏雨菲'
   };
 
   var lang = root.getAttribute('lang') === 'zh-CN' ? 'zh' : 'en';
@@ -418,13 +418,13 @@
     });
   }
 
-  /* ---------------- background: flow field (default) · network · aurora ----------------
-     Pick with <body data-bg="flow|net|aurora|none">, or preview with ?bg=... in the URL. */
+  /* ---------------- background: fireflies (default) · flow field · network · aurora ----------------
+     Pick with <body data-bg="fireflies|flow|net|aurora|none">, or preview with ?bg=... in the URL. */
   (function () {
     var canvas = $('#bg'), aurora = $('#aurora');
     var param = '';
     try { param = new URLSearchParams(location.search).get('bg') || ''; } catch (e) {}
-    var mode = (param || document.body.getAttribute('data-bg') || 'flow').toLowerCase();
+    var mode = (param || document.body.getAttribute('data-bg') || 'fireflies').toLowerCase();
     if (!canvas || !aurora) return;
 
     if (mode === 'none') { canvas.hidden = true; aurora.hidden = true; return; }
@@ -452,6 +452,62 @@
       var cs = getComputedStyle(root);
       var c = ['--net', '--net-2', '--net-3'].map(function (v) { return cs.getPropertyValue(v).trim(); }).filter(Boolean);
       if (c.length) cols = c;
+      if (impl && impl.recolor) impl.recolor();
+    }
+
+    /* --- fireflies: soft glowing dots that wander, breathe and scatter from the cursor --- */
+    function fireflies() {
+      var P = [], sprites = [];
+      function sprite(rgb) {
+        var c = document.createElement('canvas'); c.width = c.height = 64;
+        var g = c.getContext('2d'), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+        gr.addColorStop(0, 'rgba(' + rgb + ',0.95)');
+        gr.addColorStop(0.18, 'rgba(' + rgb + ',0.45)');
+        gr.addColorStop(0.5, 'rgba(' + rgb + ',0.12)');
+        gr.addColorStop(1, 'rgba(' + rgb + ',0)');
+        g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+        return c;
+      }
+      function palette() { sprites = cols.concat(['245, 158, 11']).map(sprite); }
+      function spawn(p) {
+        p.x = Math.random() * W; p.y = Math.random() * H;
+        p.z = 0.35 + Math.random() * 0.65;                 /* depth: size, speed, brightness */
+        p.r = 1.6 + Math.random() * 2.6;
+        p.a = Math.random() * Math.PI * 2; p.va = 0;       /* wandering heading */
+        p.ph = Math.random() * Math.PI * 2; p.pr = 0.0009 + Math.random() * 0.0016; /* breathing */
+        p.c = (Math.random() * sprites.length) | 0;
+        p.sp = 0.12 + Math.random() * 0.3;
+        return p;
+      }
+      return {
+        resize: function () {
+          palette();
+          var n = Math.round(clamp(W * H / 10500, 48, 140));
+          P = [];
+          for (var i = 0; i < n; i++) P.push(spawn({}));
+        },
+        recolor: palette,
+        frame: function (k, now) {
+          ctx.clearRect(0, 0, W, H);
+          var dim = isDark() ? 1 : 0.85;
+          for (var i = 0; i < P.length; i++) {
+            var p = P[i];
+            p.va += (Math.random() - 0.5) * 0.06 * k; p.va *= 0.95; p.a += p.va * k;
+            var vx = Math.cos(p.a) * p.sp * p.z * k, vy = Math.sin(p.a) * p.sp * p.z * k - 0.04 * p.z * k;
+            var dx = p.x - mouse.x, dy = p.y - mouse.y, d = Math.hypot(dx, dy);
+            if (d < 150 && d > 0.5) { var f = (1 - d / 150) * 1.1 * k; vx += dx / d * f; vy += dy / d * f; }
+            p.x += vx; p.y += vy;
+            if (p.x < -24) p.x = W + 24; else if (p.x > W + 24) p.x = -24;
+            if (p.y < -24) p.y = H + 24; else if (p.y > H + 24) p.y = -24;
+            var pulse = 0.5 + 0.5 * Math.sin(now * p.pr + p.ph);
+            pulse = 0.12 + 0.88 * pulse * pulse;
+            var s = p.r * 14 * p.z;
+            ctx.globalAlpha = pulse * (0.5 + 0.5 * p.z) * dim;
+            ctx.drawImage(sprites[p.c % sprites.length], p.x - s / 2, p.y - s / 2, s, s);
+          }
+          ctx.globalAlpha = 1;
+        }
+      };
     }
 
     /* --- flow field: particles drift along a slowly changing noise field and leave fading trails --- */
@@ -556,7 +612,7 @@
       };
     }
 
-    var impl = mode === 'net' ? net() : flow();
+    var impl = mode === 'net' ? net() : mode === 'flow' ? flow() : fireflies();
 
     function resize() {
       W = window.innerWidth; H = window.innerHeight;

@@ -12,7 +12,7 @@ repository as-is because of the `.nojekyll` file.
 | `index.html` | The whole page: hero, About, Research Journey, Publications & Projects, Honors & Skills, Contact |
 | `assets/home/home.css` | Styles, light/dark themes, responsive layout |
 | `assets/home/home.js` | Interactions: theme + language toggles, scroll progress, reveal animations, typewriter, router demo, background music, background network, Chinese text dictionary |
-| `assets/audio/gymnopedie-no1.mp3` | Background music (Satie, performed by Kevin MacLeod, CC BY 3.0) |
+| `assets/audio/qunian-xiatian.mp3` | Background music (《去年夏天》 by 夏雨菲) |
 | `assets/files/Yi_Liu_CV.pdf` | CV linked from the nav and the Contact section |
 | `images/` | Portrait, paper figures, favicons |
 
@@ -27,9 +27,10 @@ repository as-is because of the `.nojekyll` file.
 - To change the **background music**, drop a new file into `assets/audio/`, point the `data-src`
   attribute of the `#bgm` button in `index.html` at it, and update the title in the button and the
   credit line in the footer (`foot.music` in both `index.html` and the `ZH` dictionary).
-- To change the **animated background**, edit `data-bg` on the `<body>` tag: `flow` (particles
-  drifting along a noise field, the default), `net` (nodes linked by lines), `aurora` (soft drifting
-  colour fields) or `none`. Append `?bg=net` / `?bg=aurora` to the URL to preview one without editing.
+- To change the **animated background**, edit `data-bg` on the `<body>` tag: `fireflies` (glowing
+  dots that wander and breathe, the default), `flow` (particles drifting along a noise field), `net`
+  (nodes linked by lines), `aurora` (soft drifting colour fields) or `none`. Append `?bg=flow`,
+  `?bg=net` or `?bg=aurora` to the URL to preview one without editing.
 - After changing `home.css` or `home.js`, bump the `?v=` query string on their `<link>`/`<script>`
   tags in `index.html` so browsers pick up the new files.
 
@@ -41,7 +42,7 @@ repository as-is because of the `.nojekyll` file.
 - Scroll progress bar, active-section nav, timeline that fills as you scroll
 - Reveal-on-scroll animations, count-up stats, publication filters, card tilt
 - Typewriter tagline and an illustrative "ActionRAG router" demo in the hero
-- Animated background with three styles: flow field (default), network, aurora (disabled when the OS asks for reduced motion)
+- Animated background with four styles: fireflies (default), flow field, network, aurora (disabled when the OS asks for reduced motion)
 
 ## Local preview
 

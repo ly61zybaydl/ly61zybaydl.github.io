@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-  <link rel="stylesheet" href="assets/home/home.css?v=20260926c">
+  <link rel="stylesheet" href="assets/home/home.css?v=20260926d">
   <script>
     /* Apply the saved theme / language before first paint to avoid a flash. */
     (function () {
@@ -36,9 +36,9 @@
     })();
   </script>
 </head>
-<body data-bg="flow">
+<body data-bg="fireflies">
   <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
-  <!-- Background: data-bg on <body> picks "flow" (default), "net", "aurora" or "none"; ?bg=... previews one -->
+  <!-- Background: data-bg on <body> picks "fireflies" (default), "flow", "net", "aurora" or "none"; ?bg=... previews one -->
   <canvas id="bg" aria-hidden="true"></canvas>
   <div class="aurora" id="aurora" hidden aria-hidden="true"><i></i><i></i><i></i><i></i></div>
 
@@ -373,17 +373,17 @@
       <span>© <span id="year">2026</span> Yi Liu · 刘亿</span>
       <span data-i18n="foot.hint" class="footer__hint">psst — press <kbd>t</kbd> for dark mode, <kbd>l</kbd> for 中文, <kbd>m</kbd> for music</span>
     </div>
-    <p data-i18n="foot.music" class="footer__music">Background music: <a href="https://incompetech.com/music/royalty-free/music.html">Gymnopédie No. 1</a> · composed by Erik Satie, performed by Kevin MacLeod · <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></p>
+    <p data-i18n="foot.music" class="footer__music">Background music: 《去年夏天》 (Last Summer) · 夏雨菲 Xia Yufei</p>
   </footer>
 
-  <button class="bgm" id="bgm" type="button" aria-pressed="false" aria-label="Play background music" data-src="assets/audio/gymnopedie-no1.mp3">
+  <button class="bgm" id="bgm" type="button" aria-pressed="false" aria-label="Play background music" data-src="assets/audio/qunian-xiatian.mp3">
     <span class="bgm__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
     <span class="bgm__text">
-      <span class="bgm__title">Gymnopédie No. 1</span>
+      <span class="bgm__title">去年夏天 · 夏雨菲</span>
       <span class="bgm__state">Tap to play</span>
     </span>
   </button>
 
-  <script src="assets/home/home.js?v=20260926c"></script>
+  <script src="assets/home/home.js?v=20260926d"></script>
 </body>
 </html>
