@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-  <link rel="stylesheet" href="assets/home/home.css?v=20260926e">
+  <link rel="stylesheet" href="assets/home/home.css?v=20260926g">
   <script>
     /* Apply the saved theme / language before first paint to avoid a flash. */
     (function () {
@@ -32,8 +32,6 @@
         var q = new URLSearchParams(location.search).get('lang');
         var l = q || localStorage.getItem('lang');
         if (l === 'zh') document.documentElement.setAttribute('lang', 'zh-CN');
-        /* Entry gate: shown once per tab session unless the visitor chose "enter without music" before. */
-        if (!sessionStorage.getItem('gate') && localStorage.getItem('bgm') !== 'off') document.documentElement.classList.add('gate-open');
       } catch (e) {}
     })();
   </script>
@@ -54,6 +52,13 @@
       <a data-i18n="nav.con" href="#contact">Contact</a>
     </nav>
     <div class="nav__tools">
+      <button class="bgm" id="bgm" type="button" aria-pressed="false" aria-label="Play background music" data-src="assets/audio/qunian-xiatian.mp3">
+        <span class="bgm__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="bgm__text">
+          <span class="bgm__title">去年夏天 · 夏雨菲</span>
+          <span class="bgm__state">Tap to play</span>
+        </span>
+      </button>
       <a class="nav__cv" href="assets/files/Yi_Liu_CV.pdf" target="_blank" rel="noopener" data-i18n="nav.cv">CV</a>
       <button class="nav__lang" id="lang-toggle" type="button" aria-label="切换到中文 / Switch language">中</button>
       <button class="nav__theme" id="theme-toggle" type="button" aria-label="Toggle dark mode">
@@ -378,38 +383,6 @@
     <p data-i18n="foot.music" class="footer__music">Background music: 《去年夏天》 (Last Summer) · 夏雨菲 Xia Yufei</p>
   </footer>
 
-  <button class="bgm" id="bgm" type="button" aria-pressed="false" aria-label="Play background music" data-src="assets/audio/qunian-xiatian.mp3">
-    <span class="bgm__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-    <span class="bgm__text">
-      <span class="bgm__title">去年夏天 · 夏雨菲</span>
-      <span class="bgm__state">Tap to play</span>
-    </span>
-  </button>
-
-  <!-- Entry gate: the click that dismisses it lets the browser start the background music -->
-  <div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="Enter the site">
-    <div class="gate__card">
-      <span class="gate__brand">YL<span>.</span></span>
-      <p class="gate__name">Yi Liu · 刘亿</p>
-      <button class="gate__btn" id="gate-enter" type="button"><span class="gate__ring" aria-hidden="true"></span>点击进入 · Click to enter</button>
-      <p class="gate__sub">♪ 背景音乐 · Background music: 去年夏天 — 夏雨菲</p>
-      <button class="gate__mute" id="gate-mute" type="button">静音进入 · Enter without music</button>
-    </div>
-  </div>
-  <script>
-    /* Baseline: a click always dismisses the gate, even if home.js fails to load. */
-    (function () {
-      var g = document.getElementById('gate');
-      if (!g) return;
-      g.addEventListener('click', function () {
-        var h = document.documentElement;
-        h.classList.add('gate-closing');
-        setTimeout(function () { h.classList.remove('gate-open', 'gate-closing'); }, 700);
-        try { sessionStorage.setItem('gate', '1'); } catch (e) {}
-      });
-    })();
-  </script>
-
-  <script src="assets/home/home.js?v=20260926e"></script>
+  <script src="assets/home/home.js?v=20260926g"></script>
 </body>
 </html>

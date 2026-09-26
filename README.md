@@ -38,10 +38,8 @@ repository as-is because of the `.nojekyll` file.
 
 - Light / dark theme (follows the system, toggle in the nav or press `t`)
 - English / 中文 switch (toggle in the nav, press `l`, or open `/?lang=zh`)
-- Background music player (floating pill, press `m`). Browsers block autoplay, so an entry gate
-  ("点击进入 · Click to enter") appears once per tab session; the click that dismisses it starts the music.
-  "Enter without music" remembers the choice and skips the gate next time. To remove the gate, delete the
-  `gate-open` line in the head script and the `#gate` block in `index.html`.
+- Background music player (pill in the top-right nav, press `m`; starts only after a click because browsers
+  block autoplay. Visitors who turned it on before get it back on their next click anywhere on the page)
 - Scroll progress bar, active-section nav, timeline that fills as you scroll
 - Reveal-on-scroll animations, count-up stats, publication filters, card tilt
 - Typewriter tagline and an illustrative "ActionRAG router" demo in the hero
