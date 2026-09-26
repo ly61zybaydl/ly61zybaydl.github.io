@@ -89,7 +89,8 @@
     'con.e': '<span class="dot"></span> 欢迎合作 · 2027 年秋起在华科攻读硕士',
     'con.t': '让大模型想得<br><span class="grad">更聪明，而不只是更久。</span>',
     'foot.hint': '小提示：按 <kbd>t</kbd> 切换深浅色，<kbd>l</kbd> 切换 English，<kbd>m</kbd> 播放音乐',
-    'foot.music': '背景音乐：《去年夏天》· 夏雨菲'
+    'foot.music': '♪ 背景音乐：点左上角的音乐按钮打开歌单',
+    'pl.h': '歌单', 'pl.sub': '点一首切换 · 列表循环播放'
   };
 
   var lang = root.getAttribute('lang') === 'zh-CN' ? 'zh' : 'en';
@@ -127,22 +128,39 @@
     if (e.key === 'm' || e.key === 'M') { var b = $('#bgm'); if (b) b.click(); }
   });
 
-  /* ---------------- background music ---------------- */
+  /* ---------------- background music: playlist drawer (top left) + status pill (top right) ---------------- */
   (function () {
-    var btn = $('#bgm');
-    if (!btn) return;
-    var stateEl = $('.bgm__state', btn);
-    var audio = null, wantOn = false, fading = 0, status = 'idle';
+    var btn = $('#bgm'), drawer = $('#playlist-drawer'), openBtn = $('#playlist-open');
+    if (!btn || !drawer || !openBtn) return;
+    var stateEl = $('.bgm__state', btn), titleEl = $('.bgm__title', btn);
+    var rows = $$('#playlist .track');
+    var tracks = rows.map(function (li) {
+      return { src: li.getAttribute('data-src'), title: $('.track__title', li).textContent, artist: $('.track__artist', li).textContent, el: li };
+    });
+    if (!tracks.length) return;
+    var audio = null, wantOn = false, fading = 0, status = 'idle', cur = 0, loaded = -1;
+    try { var saved = parseInt(localStorage.getItem('bgmTrack'), 10); if (saved >= 0 && saved < tracks.length) cur = saved; } catch (e) {}
+
     var T = {
       en: { idle: 'tap to play', loading: 'loading…', playing: 'now playing', paused: 'paused', error: 'unavailable' },
       zh: { idle: '点击播放', loading: '加载中…', playing: '正在播放', paused: '已暂停', error: '暂不可用' }
     };
+    var playBtn = $('#pl-play'), prevBtn = $('#pl-prev'), nextBtn = $('#pl-next'), closeBtn = $('#pl-close');
+
     function render() {
+      var t = tracks[cur], playing = status === 'playing';
+      titleEl.textContent = t.title + ' · ' + t.artist;
       stateEl.textContent = T[isZh() ? 'zh' : 'en'][status];
-      btn.classList.toggle('is-playing', status === 'playing');
+      btn.classList.toggle('is-playing', playing);
       btn.classList.toggle('is-loading', status === 'loading');
-      btn.setAttribute('aria-pressed', status === 'playing' ? 'true' : 'false');
-      btn.setAttribute('aria-label', (status === 'playing' ? 'Pause' : 'Play') + ' background music');
+      btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+      btn.setAttribute('aria-label', (playing ? 'Pause' : 'Play') + ' background music');
+      openBtn.classList.toggle('is-playing', playing);
+      if (playBtn) playBtn.classList.toggle('is-playing', playing);
+      rows.forEach(function (li, i) {
+        li.classList.toggle('is-current', i === cur);
+        li.classList.toggle('is-playing', i === cur && playing);
+      });
     }
     function fadeTo(target, done) {
       cancelAnimationFrame(fading);
@@ -156,23 +174,36 @@
     }
     function ensure() {
       if (audio) return audio;
-      audio = new Audio(btn.getAttribute('data-src'));
-      audio.loop = true;
+      audio = new Audio();
       audio.preload = 'auto';
-      try { audio.volume = 0; } catch (e) {}
       audio.addEventListener('playing', function () { if (wantOn) { status = 'playing'; render(); fadeTo(0.45); } });
       audio.addEventListener('waiting', function () { if (wantOn) { status = 'loading'; render(); } });
       audio.addEventListener('error', function () { status = 'error'; wantOn = false; render(); });
+      audio.addEventListener('ended', function () { if (wantOn) jump(cur + 1); });
       return audio;
     }
+    function load(i) {
+      var a = ensure();
+      if (loaded !== i) {
+        loaded = i; cur = i;
+        a.src = tracks[i].src;
+        try { a.volume = 0; } catch (e) {}
+        store('bgmTrack', String(i));
+      }
+      return a;
+    }
+    /* Each play() request gets a number so a rejection from an interrupted, older request (e.g. the
+       visitor pressed "next" before the previous track had started) cannot clobber the new state. */
+    var gen = 0;
     function play() {
       wantOn = true; store('bgm', 'on');
-      var a = ensure();
+      var a = load(cur);
       cancelAnimationFrame(fading);
       if (!a.paused) { status = 'playing'; render(); fadeTo(0.45); return; }
       status = 'loading'; render();
+      var my = ++gen;
       var p = a.play();
-      if (p && p.catch) p.catch(function () { if (wantOn) { wantOn = false; status = 'paused'; render(); } });
+      if (p && p.catch) p.catch(function () { if (my === gen && wantOn) { wantOn = false; status = 'paused'; render(); } });
     }
     function pause() {
       wantOn = false; store('bgm', 'off');
@@ -181,28 +212,63 @@
       if (audio.paused || audio.volume === 0) { audio.pause(); return; }
       fadeTo(0, function () { audio.pause(); });
     }
+    /* switch to track i (wrapping) and play it */
+    function jump(i) {
+      i = (i + tracks.length) % tracks.length;
+      if (audio) { cancelAnimationFrame(fading); audio.pause(); }
+      cur = i; loaded = -1;
+      play();
+    }
+    /* row click: toggle the track that is already loaded, otherwise switch to it */
+    function select(i) {
+      if (audio && loaded === i) { wantOn ? pause() : play(); } else jump(i);
+    }
+
     btn.addEventListener('click', function () { wantOn ? pause() : play(); });
+    rows.forEach(function (li, i) { $('.track__btn', li).addEventListener('click', function () { select(i); }); });
+    if (playBtn) playBtn.addEventListener('click', function () { wantOn ? pause() : play(); });
+    if (prevBtn) prevBtn.addEventListener('click', function () { jump(cur - 1); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { jump(cur + 1); });
     document.addEventListener('langchange', render);
+
+    /* ---- playlist drawer ---- */
+    function openDrawer() {
+      drawer.hidden = false;
+      void drawer.offsetWidth; /* let the browser see the un-hidden state before the transition starts */
+      drawer.classList.add('is-open');
+      openBtn.setAttribute('aria-expanded', 'true');
+    }
+    function closeDrawer() {
+      drawer.classList.remove('is-open');
+      openBtn.setAttribute('aria-expanded', 'false');
+      setTimeout(function () { if (!drawer.classList.contains('is-open')) drawer.hidden = true; }, 300);
+    }
+    openBtn.addEventListener('click', function () { drawer.hidden ? openDrawer() : closeDrawer(); });
+    if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+    document.addEventListener('pointerdown', function (e) {
+      if (!drawer.hidden && !drawer.contains(e.target) && !openBtn.contains(e.target)) closeDrawer();
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !drawer.hidden) closeDrawer(); });
 
     /* Start on the visitor's first gesture anywhere on the page (used when autoplay was blocked). */
     function armKick() {
       var off = function () { window.removeEventListener('pointerdown', kick); window.removeEventListener('keydown', kick); };
-      var kick = function (e) { off(); if (!btn.contains(e.target) && !wantOn) play(); };
+      var kick = function (e) {
+        off();
+        if (!btn.contains(e.target) && !drawer.contains(e.target) && !openBtn.contains(e.target) && !wantOn) play();
+      };
       window.addEventListener('pointerdown', kick);
       window.addEventListener('keydown', kick);
     }
-
-    /* Visitors who chose music before: try to start at once (browsers allow it once they trust the site);
-       if that is blocked, the first gesture on the page starts it instead. */
+    /* Visitors who chose music before: try to resume at once (allowed once the browser trusts the site),
+       otherwise the first gesture on the page starts it. */
     var pref = null;
     try { pref = localStorage.getItem('bgm'); } catch (e) {}
     if (pref === 'on') {
-      var a0 = ensure();
       wantOn = true;
+      var a0 = load(cur), my0 = ++gen;
       var p0 = a0.play();
-      if (p0 && p0.then) {
-        p0.catch(function () { wantOn = false; status = 'idle'; render(); armKick(); });
-      }
+      if (p0 && p0.then) p0.catch(function () { if (my0 !== gen) return; wantOn = false; status = 'idle'; render(); armKick(); });
     }
     render();
   })();

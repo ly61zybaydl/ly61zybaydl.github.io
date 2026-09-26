@@ -12,7 +12,7 @@ repository as-is because of the `.nojekyll` file.
 | `index.html` | The whole page: hero, About, Research Journey, Publications & Projects, Honors & Skills, Contact |
 | `assets/home/home.css` | Styles, light/dark themes, responsive layout |
 | `assets/home/home.js` | Interactions: theme + language toggles, scroll progress, reveal animations, typewriter, router demo, background music, background network, Chinese text dictionary |
-| `assets/audio/qunian-xiatian.mp3` | Background music (《去年夏天》 by 夏雨菲) |
+| `assets/audio/*.mp3` | Background music tracks listed in the playlist drawer (《去年夏天》夏雨菲, 《寂寞烟火》蓝心羽, Ferrari · Bebe Rexha) |
 | `assets/files/Yi_Liu_CV.pdf` | CV linked from the nav and the Contact section |
 | `images/` | Portrait, paper figures, favicons |
 
@@ -24,9 +24,9 @@ repository as-is because of the `.nojekyll` file.
 - To add a publication or project, copy one `<article class="pub">` block in `index.html`, set its
   `data-tags` (used by the filter buttons: `first`, `llm`, `code`, `oss`) and add Chinese summary keys if needed.
 - To add an experience, copy one `<li class="tl">` block inside the timeline.
-- To change the **background music**, drop a new file into `assets/audio/`, point the `data-src`
-  attribute of the `#bgm` button in `index.html` at it, and update the title in the button and the
-  credit line in the footer (`foot.music` in both `index.html` and the `ZH` dictionary).
+- To add a **background music** track, drop the file into `assets/audio/` and copy one
+  `<li class="track">` row inside the playlist drawer in `index.html` (set `data-src`, the title, the
+  artist and the duration text). The order of the rows is the play order; the list loops.
 - To change the **animated background**, edit `data-bg` on the `<body>` tag: `fireflies` (glowing
   dots that wander and breathe, the default), `flow` (particles drifting along a noise field), `net`
   (nodes linked by lines), `aurora` (soft drifting colour fields) or `none`. Append `?bg=flow`,
@@ -38,8 +38,10 @@ repository as-is because of the `.nojekyll` file.
 
 - Light / dark theme (follows the system, toggle in the nav or press `t`)
 - English / 中文 switch (toggle in the nav, press `l`, or open `/?lang=zh`)
-- Background music player (pill in the top-right nav, press `m`; starts only after a click because browsers
-  block autoplay. Visitors who turned it on before get it back on their next click anywhere on the page)
+- Background music: playlist drawer from the music button at the top left (pick a song, previous / next,
+  loops through the list) and a status pill at the top right (play / pause, or press `m`). Playback starts
+  only after a click because browsers block autoplay; visitors who turned it on before get it back on
+  their next click anywhere on the page.
 - Scroll progress bar, active-section nav, timeline that fills as you scroll
 - Reveal-on-scroll animations, count-up stats, publication filters, card tilt
 - Typewriter tagline and an illustrative "ActionRAG router" demo in the hero
