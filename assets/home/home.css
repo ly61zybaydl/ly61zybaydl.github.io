@@ -795,6 +795,63 @@ main { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 .bgm.is-playing .bgm__state { color: var(--accent); }
 .bgm.is-loading .bgm__state { animation: blink 1s steps(1) infinite; }
 
+/* ---------- entry gate ---------- */
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: none;
+  place-items: center;
+  padding: 24px;
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  transition: opacity .6s ease;
+}
+html.gate-open { overflow: hidden; }
+html.gate-open .gate { display: grid; }
+html.gate-closing .gate { opacity: 0; pointer-events: none; }
+.gate__card { max-width: 560px; text-align: center; animation: gate-in .8s cubic-bezier(.2, .7, .2, 1) both; }
+@keyframes gate-in { from { opacity: 0; transform: translateY(14px) scale(.98); } }
+.gate__brand { font: 800 46px/1 var(--display); letter-spacing: -.04em; color: var(--ink); }
+.gate__brand span { color: var(--accent); }
+.gate__name { margin: 10px 0 30px; font: 600 1.05rem var(--display); color: var(--ink-2); }
+.gate__btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 30px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--grad);
+  color: #fff;
+  font: 700 17px var(--display);
+  cursor: pointer;
+  box-shadow: 0 18px 40px -16px rgba(var(--net), .85);
+  transition: transform .2s, box-shadow .2s;
+}
+.gate__btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 24px 46px -16px rgba(var(--net), .95); }
+.gate__ring { position: absolute; inset: -6px; border-radius: 999px; border: 2px solid rgba(var(--net), .6); animation: gate-ring 2s ease-out infinite; pointer-events: none; }
+@keyframes gate-ring { 0% { transform: scale(.96); opacity: .9; } 100% { transform: scale(1.28); opacity: 0; } }
+.gate__sub { margin: 20px 0 6px; font: 500 12.5px var(--mono); color: var(--ink-3); }
+.gate__mute {
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--ink-3);
+  font: 500 13px var(--font);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.gate__mute:hover { color: var(--ink); }
+@media (max-width: 720px) {
+  .gate__brand { font-size: 40px; }
+  .gate__btn { padding: 14px 24px; font-size: 16px; }
+}
+
 /* ---------- responsive ---------- */
 @media (max-width: 980px) {
   .hero { grid-template-columns: 1fr; gap: 40px; min-height: 0; padding-top: 40px; }

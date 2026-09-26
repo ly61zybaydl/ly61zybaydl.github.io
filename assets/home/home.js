@@ -184,14 +184,44 @@
     btn.addEventListener('click', function () { wantOn ? pause() : play(); });
     document.addEventListener('langchange', render);
 
-    /* Return visits: browsers block autoplay, so resume on the first gesture instead. */
-    var remembered = false;
-    try { remembered = localStorage.getItem('bgm') === 'on'; } catch (e) {}
-    if (remembered) {
+    /* Start on the visitor's first gesture anywhere on the page (used when autoplay was blocked). */
+    function armKick() {
       var off = function () { window.removeEventListener('pointerdown', kick); window.removeEventListener('keydown', kick); };
       var kick = function (e) { off(); if (!btn.contains(e.target) && !wantOn) play(); };
       window.addEventListener('pointerdown', kick);
       window.addEventListener('keydown', kick);
+    }
+
+    /* Entry gate: the click that dismisses it is the user gesture browsers require before audio may start. */
+    var gate = $('#gate');
+    function closeGate() {
+      if (!root.classList.contains('gate-open')) return;
+      root.classList.add('gate-closing');
+      setTimeout(function () { root.classList.remove('gate-open', 'gate-closing'); }, 700);
+      try { sessionStorage.setItem('gate', '1'); } catch (e) {}
+    }
+    if (gate) {
+      gate.addEventListener('click', function (e) {
+        if (e.target.closest('#gate-mute')) { wantOn = false; store('bgm', 'off'); status = 'idle'; render(); return; }
+        play();
+      });
+      if (root.classList.contains('gate-open')) { var enter = $('#gate-enter'); if (enter) enter.focus(); }
+    }
+
+    /* Visitors who chose music before: try to start at once (browsers allow it once they trust the site);
+       if that is blocked, the gate click or the first gesture on the page starts it instead. */
+    var pref = null;
+    try { pref = localStorage.getItem('bgm'); } catch (e) {}
+    if (pref === 'on') {
+      var a0 = ensure();
+      wantOn = true;
+      var p0 = a0.play();
+      if (p0 && p0.then) {
+        p0.then(closeGate).catch(function () {
+          wantOn = false; status = 'idle'; render();
+          if (!root.classList.contains('gate-open')) armKick();
+        });
+      }
     }
     render();
   })();
