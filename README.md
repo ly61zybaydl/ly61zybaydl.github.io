@@ -27,6 +27,9 @@ repository as-is because of the `.nojekyll` file.
 - To change the **background music**, drop a new file into `assets/audio/`, point the `data-src`
   attribute of the `#bgm` button in `index.html` at it, and update the title in the button and the
   credit line in the footer (`foot.music` in both `index.html` and the `ZH` dictionary).
+- To change the **animated background**, edit `data-bg` on the `<body>` tag: `flow` (particles
+  drifting along a noise field, the default), `net` (nodes linked by lines), `aurora` (soft drifting
+  colour fields) or `none`. Append `?bg=net` / `?bg=aurora` to the URL to preview one without editing.
 - After changing `home.css` or `home.js`, bump the `?v=` query string on their `<link>`/`<script>`
   tags in `index.html` so browsers pick up the new files.
 
@@ -38,7 +41,7 @@ repository as-is because of the `.nojekyll` file.
 - Scroll progress bar, active-section nav, timeline that fills as you scroll
 - Reveal-on-scroll animations, count-up stats, publication filters, card tilt
 - Typewriter tagline and an illustrative "ActionRAG router" demo in the hero
-- Animated background network (disabled when the OS asks for reduced motion)
+- Animated background with three styles: flow field (default), network, aurora (disabled when the OS asks for reduced motion)
 
 ## Local preview
 

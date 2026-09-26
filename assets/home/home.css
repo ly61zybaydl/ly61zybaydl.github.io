@@ -21,6 +21,9 @@
   --shadow: 0 1px 2px rgba(17, 24, 39, .04), 0 14px 34px -20px rgba(17, 24, 39, .28);
   --shadow-lg: 0 2px 6px rgba(17, 24, 39, .05), 0 34px 64px -30px rgba(37, 99, 235, .45);
   --net: 37, 99, 235;
+  --net-2: 124, 58, 237;
+  --net-3: 8, 145, 178;
+  --aur: .30;
   --radius: 18px;
   --nav-h: 64px;
   --font: "Inter", -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
@@ -47,6 +50,9 @@
     --shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 14px 34px -20px rgba(0, 0, 0, .8);
     --shadow-lg: 0 2px 6px rgba(0, 0, 0, .35), 0 34px 64px -30px rgba(122, 162, 255, .45);
     --net: 122, 162, 255;
+    --net-2: 180, 140, 255;
+    --net-3: 52, 208, 224;
+    --aur: .36;
     color-scheme: dark;
   }
 }
@@ -67,11 +73,15 @@
   --shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 14px 34px -20px rgba(0, 0, 0, .8);
   --shadow-lg: 0 2px 6px rgba(0, 0, 0, .35), 0 34px 64px -30px rgba(122, 162, 255, .45);
   --net: 122, 162, 255;
+  --net-2: 180, 140, 255;
+  --net-3: 52, 208, 224;
+  --aur: .36;
   color-scheme: dark;
 }
 
 /* ---------- base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 16px); -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
@@ -112,7 +122,7 @@ main { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 .progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 60; pointer-events: none; }
 #progress-bar { display: block; height: 100%; width: 0; background: var(--grad); transition: width .08s linear; }
 
-#net {
+#bg {
   position: fixed;
   inset: 0;
   width: 100%;
@@ -121,6 +131,35 @@ main { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
   pointer-events: none;
   opacity: .9;
 }
+
+/* aurora: four soft colour fields drifting behind the page (data-bg="aurora") */
+.aurora {
+  --px: 0px; --py: 0px;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  transform: translate(var(--px), var(--py));
+  transition: transform .8s ease-out;
+}
+.aurora i {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 72vmax; height: 72vmax;
+  margin: -36vmax 0 0 -36vmax;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(var(--net), var(--aur)), rgba(var(--net), 0));
+  animation: aur-a 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.aurora i:nth-child(2) { background: radial-gradient(closest-side, rgba(var(--net-2), var(--aur)), rgba(var(--net-2), 0)); animation: aur-b 34s ease-in-out infinite alternate; }
+.aurora i:nth-child(3) { background: radial-gradient(closest-side, rgba(var(--net-3), calc(var(--aur) * .8)), rgba(var(--net-3), 0)); animation: aur-c 40s ease-in-out infinite alternate; }
+.aurora i:nth-child(4) { background: radial-gradient(closest-side, rgba(219, 39, 119, calc(var(--aur) * .6)), rgba(219, 39, 119, 0)); animation: aur-d 46s ease-in-out infinite alternate; }
+@keyframes aur-a { from { transform: translate(-32vw, -28vh) scale(1); } to { transform: translate(18vw, 6vh) scale(1.25); } }
+@keyframes aur-b { from { transform: translate(30vw, -20vh) scale(1.1); } to { transform: translate(-14vw, 22vh) scale(.9); } }
+@keyframes aur-c { from { transform: translate(-10vw, 30vh) scale(.9); } to { transform: translate(26vw, -18vh) scale(1.2); } }
+@keyframes aur-d { from { transform: translate(24vw, 26vh) scale(1); } to { transform: translate(-28vw, -10vh) scale(1.15); } }
 
 /* ---------- reveal on scroll ---------- */
 .js .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s ease, transform .75s cubic-bezier(.2, .7, .2, 1); }
@@ -791,5 +830,6 @@ main { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .js .reveal { opacity: 1; transform: none; }
-  #net { display: none; }
+  #bg { display: none; }
+  .aurora { transition: none; }
 }

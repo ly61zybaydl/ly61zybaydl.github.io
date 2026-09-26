@@ -418,69 +418,161 @@
     });
   }
 
-  /* ---------------- background network ---------------- */
+  /* ---------------- background: flow field (default) · network · aurora ----------------
+     Pick with <body data-bg="flow|net|aurora|none">, or preview with ?bg=... in the URL. */
   (function () {
-    var canvas = $('#net');
-    if (!canvas || reduceMotion) return;
+    var canvas = $('#bg'), aurora = $('#aurora');
+    var param = '';
+    try { param = new URLSearchParams(location.search).get('bg') || ''; } catch (e) {}
+    var mode = (param || document.body.getAttribute('data-bg') || 'flow').toLowerCase();
+    if (!canvas || !aurora) return;
+
+    if (mode === 'none') { canvas.hidden = true; aurora.hidden = true; return; }
+
+    if (mode === 'aurora') {
+      canvas.hidden = true; aurora.hidden = false;
+      if (!reduceMotion && finePointer) {
+        window.addEventListener('pointermove', function (e) {
+          var x = e.clientX / window.innerWidth - 0.5, y = e.clientY / window.innerHeight - 0.5;
+          aurora.style.setProperty('--px', (x * 36).toFixed(1) + 'px');
+          aurora.style.setProperty('--py', (y * 36).toFixed(1) + 'px');
+        }, { passive: true });
+      }
+      return;
+    }
+
+    aurora.hidden = true;
+    if (reduceMotion) { canvas.hidden = true; return; }
+
     var ctx = canvas.getContext('2d');
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var W, H, nodes = [], mouse = { x: -1e4, y: -1e4 }, rgb = '37, 99, 235', running = true, raf = 0;
+    var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    var W = 0, H = 0, mouse = { x: -1e4, y: -1e4 }, running = true, raf = 0, last = 0, cols = ['37, 99, 235'];
 
     function recolor() {
-      var v = getComputedStyle(root).getPropertyValue('--net').trim();
-      if (v) rgb = v;
+      var cs = getComputedStyle(root);
+      var c = ['--net', '--net-2', '--net-3'].map(function (v) { return cs.getPropertyValue(v).trim(); }).filter(Boolean);
+      if (c.length) cols = c;
     }
+
+    /* --- flow field: particles drift along a slowly changing noise field and leave fading trails --- */
+    function flow() {
+      var P = [], perm = new Uint8Array(512), i, j, t;
+      for (i = 0; i < 256; i++) perm[i] = i;
+      for (i = 255; i > 0; i--) { j = (Math.random() * (i + 1)) | 0; t = perm[i]; perm[i] = perm[j]; perm[j] = t; }
+      for (i = 0; i < 256; i++) perm[i + 256] = perm[i];
+      var seed = Math.random() * 512;
+      function fade(x) { return x * x * (3 - 2 * x); }
+      function lerp(a, b, x) { return a + (b - a) * x; }
+      function hash(x, y, z) { return perm[(perm[(perm[x & 255] + y) & 255] + z) & 255] / 255; }
+      function noise(x, y, z) {
+        var xi = Math.floor(x), yi = Math.floor(y), zi = Math.floor(z);
+        var u = fade(x - xi), v = fade(y - yi), w = fade(z - zi);
+        var a = lerp(lerp(hash(xi, yi, zi), hash(xi + 1, yi, zi), u), lerp(hash(xi, yi + 1, zi), hash(xi + 1, yi + 1, zi), u), v);
+        var b = lerp(lerp(hash(xi, yi, zi + 1), hash(xi + 1, yi, zi + 1), u), lerp(hash(xi, yi + 1, zi + 1), hash(xi + 1, yi + 1, zi + 1), u), v);
+        return lerp(a, b, w);
+      }
+      function spawn(p) {
+        p.x = Math.random() * W; p.y = Math.random() * H;
+        p.life = 90 + Math.random() * 220;
+        p.c = (Math.random() * cols.length) | 0;
+        p.w = 0.7 + Math.random() * 1.1;
+        p.sp = 0.55 + Math.random() * 0.85;
+        return p;
+      }
+      return {
+        resize: function () {
+          var n = Math.round(clamp(W * H / 6500, 120, 420));
+          P = [];
+          for (var k = 0; k < n; k++) { var p = spawn({}); p.life *= Math.random(); P.push(p); }
+          ctx.clearRect(0, 0, W, H);
+        },
+        frame: function (k, now) {
+          ctx.globalCompositeOperation = 'destination-out';
+          ctx.fillStyle = 'rgba(0,0,0,0.035)';
+          ctx.fillRect(0, 0, W, H);
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.lineCap = 'round';
+          var s = 0.0017, z = now * 0.00007 + seed;
+          for (var i = 0; i < P.length; i++) {
+            var p = P[i];
+            var a = noise(p.x * s, p.y * s, z) * Math.PI * 4;
+            var vx = Math.cos(a) * p.sp * k, vy = Math.sin(a) * p.sp * k;
+            var dx = mouse.x - p.x, dy = mouse.y - p.y, d = Math.hypot(dx, dy);
+            if (d < 180 && d > 1) { vx += dx / d * 0.16 * k; vy += dy / d * 0.16 * k; }
+            var px = p.x, py = p.y;
+            p.x += vx; p.y += vy; p.life -= k;
+            if (p.life <= 0 || p.x < -4 || p.x > W + 4 || p.y < -4 || p.y > H + 4) { spawn(p); continue; }
+            ctx.strokeStyle = 'rgba(' + cols[p.c % cols.length] + ',0.26)';
+            ctx.lineWidth = p.w;
+            ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(p.x, p.y); ctx.stroke();
+          }
+        }
+      };
+    }
+
+    /* --- network: drifting nodes linked by distance, reacting to the cursor --- */
+    function net() {
+      var nodes = [];
+      return {
+        resize: function () {
+          var n = Math.round(clamp(W * H / 22000, 28, 72));
+          nodes = [];
+          for (var i = 0; i < n; i++) {
+            nodes.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - 0.5) * 0.35, vy: (Math.random() - 0.5) * 0.35, r: 1.2 + Math.random() * 1.6 });
+          }
+        },
+        frame: function (k) {
+          var rgb = cols[0];
+          for (var i = 0; i < nodes.length; i++) {
+            var p = nodes[i];
+            var dx = mouse.x - p.x, dy = mouse.y - p.y, d = Math.hypot(dx, dy);
+            if (d < 220 && d > 0.001) { p.vx += dx / d * 0.012 * k; p.vy += dy / d * 0.012 * k; }
+            p.vx = clamp(p.vx * 0.995, -0.7, 0.7); p.vy = clamp(p.vy * 0.995, -0.7, 0.7);
+            p.x += p.vx * k; p.y += p.vy * k;
+            if (p.x < -10) p.x = W + 10; else if (p.x > W + 10) p.x = -10;
+            if (p.y < -10) p.y = H + 10; else if (p.y > H + 10) p.y = -10;
+          }
+          ctx.clearRect(0, 0, W, H);
+          var link = Math.min(160, W / 7);
+          ctx.lineWidth = 1;
+          for (i = 0; i < nodes.length; i++) {
+            var a = nodes[i];
+            for (var j = i + 1; j < nodes.length; j++) {
+              var b = nodes[j], ex = a.x - b.x, ey = a.y - b.y, dd = Math.sqrt(ex * ex + ey * ey);
+              if (dd < link) {
+                ctx.strokeStyle = 'rgba(' + rgb + ',' + ((1 - dd / link) * 0.32).toFixed(3) + ')';
+                ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+              }
+            }
+            var md = Math.hypot(a.x - mouse.x, a.y - mouse.y);
+            if (md < link * 1.3) {
+              ctx.strokeStyle = 'rgba(' + rgb + ',' + ((1 - md / (link * 1.3)) * 0.5).toFixed(3) + ')';
+              ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
+            }
+          }
+          ctx.fillStyle = 'rgba(' + rgb + ',0.55)';
+          for (i = 0; i < nodes.length; i++) { ctx.beginPath(); ctx.arc(nodes[i].x, nodes[i].y, nodes[i].r, 0, Math.PI * 2); ctx.fill(); }
+        }
+      };
+    }
+
+    var impl = mode === 'net' ? net() : flow();
+
     function resize() {
       W = window.innerWidth; H = window.innerHeight;
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
       canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      var n = Math.round(clamp(W * H / 22000, 28, 72));
-      nodes = [];
-      for (var i = 0; i < n; i++) {
-        nodes.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - 0.5) * 0.35, vy: (Math.random() - 0.5) * 0.35, r: 1.2 + Math.random() * 1.6 });
-      }
+      impl.resize();
     }
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      var link = Math.min(160, W / 7);
-      for (var i = 0; i < nodes.length; i++) {
-        var a = nodes[i];
-        for (var j = i + 1; j < nodes.length; j++) {
-          var b = nodes[j], dx = a.x - b.x, dy = a.y - b.y, d = Math.sqrt(dx * dx + dy * dy);
-          if (d < link) {
-            ctx.strokeStyle = 'rgba(' + rgb + ',' + ((1 - d / link) * 0.32).toFixed(3) + ')';
-            ctx.lineWidth = 1;
-            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-          }
-        }
-        var md = Math.hypot(a.x - mouse.x, a.y - mouse.y);
-        if (md < link * 1.3) {
-          ctx.strokeStyle = 'rgba(' + rgb + ',' + ((1 - md / (link * 1.3)) * 0.5).toFixed(3) + ')';
-          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
-        }
-      }
-      for (var k = 0; k < nodes.length; k++) {
-        var p = nodes[k];
-        ctx.fillStyle = 'rgba(' + rgb + ',0.55)';
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
-      }
-    }
-    function tick() {
+    function tick(now) {
       if (!running) return;
-      for (var i = 0; i < nodes.length; i++) {
-        var p = nodes[i];
-        var dx = mouse.x - p.x, dy = mouse.y - p.y, d = Math.hypot(dx, dy);
-        if (d < 220 && d > 0.001) { p.vx += dx / d * 0.012; p.vy += dy / d * 0.012; }
-        p.vx = clamp(p.vx * 0.995, -0.7, 0.7); p.vy = clamp(p.vy * 0.995, -0.7, 0.7);
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < -10) p.x = W + 10; else if (p.x > W + 10) p.x = -10;
-        if (p.y < -10) p.y = H + 10; else if (p.y > H + 10) p.y = -10;
-      }
-      draw();
+      var k = last ? clamp((now - last) / 16.67, 0.25, 2.5) : 1;
+      last = now;
+      impl.frame(k, now);
       raf = requestAnimationFrame(tick);
     }
-    function start() { if (!running) { running = true; tick(); } }
+    function start() { if (!running) { running = true; last = 0; raf = requestAnimationFrame(tick); } }
     function stop() { running = false; cancelAnimationFrame(raf); }
 
     var resizeTimer;
@@ -491,6 +583,6 @@
     document.addEventListener('themechange', recolor);
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', recolor);
 
-    recolor(); resize(); tick();
+    recolor(); resize(); raf = requestAnimationFrame(tick);
   })();
 })();
