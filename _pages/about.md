@@ -52,22 +52,22 @@ Hi, I am YiLiu(刘亿），a undergradute student at Huazhong University of Scie
 
 ### Furong's Lab, University of Maryland
 
-**Jul 2026 – Present | Remote Intern**
+**Jul 2026 – Present · Remote Intern**
 
 - Advisor: Prof. Furong Huang
 
 ### One Lab, Huazhong University of Science and Technology (HUST)
 
-**May 2024 – Present | Wuhan, China**
+**May 2024 – Present · Wuhan, China**
 
-**ML & NLP & Multimodal Group | Senior Member**
+**ML & NLP & Multimodal Group · Senior Member**
 
 - Advisor: Prof. Yao Wan
 - Delivered technical presentations on LLM Self-Evaluation methodologies and advancements in Diffusion Language Models (Diffusion LLMs).
 
 ### LAIR Lab, Lehigh University
 
-**Jul 2024 – Sep 2024 | Remote Intern**
+**Jul 2024 – Sep 2024 · Remote Intern**
 
 - Advisor: Prof. Licao Sun
 - Shared papers in group meetings.
