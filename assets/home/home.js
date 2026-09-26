@@ -89,7 +89,7 @@
     'con.e': '<span class="dot"></span> 欢迎合作 · 2027 年秋起在华科攻读硕士',
     'con.t': '让大模型想得<br><span class="grad">更聪明，而不只是更久。</span>',
     'foot.hint': '小提示：按 <kbd>t</kbd> 切换深浅色，<kbd>l</kbd> 切换 English，<kbd>m</kbd> 播放音乐',
-    'foot.music': '♪ 背景音乐：点左上角的音乐按钮打开歌单',
+    'foot.music': '♪ 背景音乐：右上角胶囊可播放/暂停，点它的小箭头打开歌单',
     'pl.h': '歌单', 'pl.sub': '点一首切换 · 列表循环播放'
   };
 
@@ -132,6 +132,7 @@
   (function () {
     var btn = $('#bgm'), drawer = $('#playlist-drawer'), openBtn = $('#playlist-open');
     if (!btn || !drawer || !openBtn) return;
+    var group = $('#bgm-group') || openBtn;
     var stateEl = $('.bgm__state', btn), titleEl = $('.bgm__title', btn);
     var rows = $$('#playlist .track');
     var tracks = rows.map(function (li) {
@@ -246,7 +247,7 @@
     openBtn.addEventListener('click', function () { drawer.hidden ? openDrawer() : closeDrawer(); });
     if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
     document.addEventListener('pointerdown', function (e) {
-      if (!drawer.hidden && !drawer.contains(e.target) && !openBtn.contains(e.target)) closeDrawer();
+      if (!drawer.hidden && !drawer.contains(e.target) && !group.contains(e.target)) closeDrawer();
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !drawer.hidden) closeDrawer(); });
 
@@ -255,7 +256,7 @@
       var off = function () { window.removeEventListener('pointerdown', kick); window.removeEventListener('keydown', kick); };
       var kick = function (e) {
         off();
-        if (!btn.contains(e.target) && !drawer.contains(e.target) && !openBtn.contains(e.target) && !wantOn) play();
+        if (!group.contains(e.target) && !drawer.contains(e.target) && !wantOn) play();
       };
       window.addEventListener('pointerdown', kick);
       window.addEventListener('keydown', kick);

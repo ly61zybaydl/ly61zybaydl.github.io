@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-  <link rel="stylesheet" href="assets/home/home.css?v=20260926h">
+  <link rel="stylesheet" href="assets/home/home.css?v=20260926i">
   <script>
     /* Apply the saved theme / language before first paint to avoid a flash. */
     (function () {
@@ -44,9 +44,6 @@
 
   <header class="nav" id="nav">
     <a class="nav__brand" href="#top" aria-label="Back to top">YL<span>.</span></a>
-    <button class="nav__music" id="playlist-open" type="button" aria-expanded="false" aria-controls="playlist-drawer" aria-label="Open playlist" title="Playlist · 歌单">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-    </button>
     <nav class="nav__links" aria-label="Sections">
       <a data-i18n="nav.about" href="#about">About</a>
       <a data-i18n="nav.exp" href="#experience">Experience</a>
@@ -55,13 +52,18 @@
       <a data-i18n="nav.con" href="#contact">Contact</a>
     </nav>
     <div class="nav__tools">
-      <button class="bgm" id="bgm" type="button" aria-pressed="false" aria-label="Play background music">
-        <span class="bgm__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-        <span class="bgm__text">
-          <span class="bgm__title">去年夏天 · 夏雨菲</span>
-          <span class="bgm__state">Tap to play</span>
-        </span>
-      </button>
+      <div class="bgm" id="bgm-group">
+        <button class="bgm__main" id="bgm" type="button" aria-pressed="false" aria-label="Play background music">
+          <span class="bgm__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="bgm__text">
+            <span class="bgm__title">去年夏天 · 夏雨菲</span>
+            <span class="bgm__state">Tap to play</span>
+          </span>
+        </button>
+        <button class="bgm__list" id="playlist-open" type="button" aria-expanded="false" aria-controls="playlist-drawer" aria-label="Open playlist" title="Playlist · 歌单">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </div>
       <a class="nav__cv" href="assets/files/Yi_Liu_CV.pdf" target="_blank" rel="noopener" data-i18n="nav.cv">CV</a>
       <button class="nav__lang" id="lang-toggle" type="button" aria-label="切换到中文 / Switch language">中</button>
       <button class="nav__theme" id="theme-toggle" type="button" aria-label="Toggle dark mode">
@@ -71,7 +73,7 @@
     </div>
   </header>
 
-  <!-- Playlist drawer (opens from the music button at the top left). Add a song: copy one <li class="track"> -->
+  <!-- Playlist drawer (opens from the arrow on the music pill at the top right). Add a song: copy one <li class="track"> -->
   <aside class="drawer" id="playlist-drawer" hidden aria-label="Playlist">
     <div class="drawer__head">
       <div>
@@ -428,9 +430,9 @@
       <span>© <span id="year">2026</span> Yi Liu · 刘亿</span>
       <span data-i18n="foot.hint" class="footer__hint">psst — press <kbd>t</kbd> for dark mode, <kbd>l</kbd> for 中文, <kbd>m</kbd> for music</span>
     </div>
-    <p data-i18n="foot.music" class="footer__music">♪ Background music: open the playlist from the music button at the top left</p>
+    <p data-i18n="foot.music" class="footer__music">♪ Background music: the pill at the top right plays or pauses, its arrow opens the playlist</p>
   </footer>
 
-  <script src="assets/home/home.js?v=20260926h"></script>
+  <script src="assets/home/home.js?v=20260926i"></script>
 </body>
 </html>

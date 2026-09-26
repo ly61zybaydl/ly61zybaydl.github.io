@@ -38,10 +38,10 @@ repository as-is because of the `.nojekyll` file.
 
 - Light / dark theme (follows the system, toggle in the nav or press `t`)
 - English / 中文 switch (toggle in the nav, press `l`, or open `/?lang=zh`)
-- Background music: playlist drawer from the music button at the top left (pick a song, previous / next,
-  loops through the list) and a status pill at the top right (play / pause, or press `m`). Playback starts
-  only after a click because browsers block autoplay; visitors who turned it on before get it back on
-  their next click anywhere on the page.
+- Background music: one pill at the top right. Its main part plays / pauses (or press `m`); the arrow
+  at its end opens the playlist drawer (pick a song, previous / next, loops through the list). Playback
+  starts only after a click because browsers block autoplay; visitors who turned it on before get it
+  back on their next click anywhere on the page.
 - Scroll progress bar, active-section nav, timeline that fills as you scroll
 - Reveal-on-scroll animations, count-up stats, publication filters, card tilt
 - Typewriter tagline and an illustrative "ActionRAG router" demo in the hero

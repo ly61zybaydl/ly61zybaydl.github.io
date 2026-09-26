@@ -210,35 +210,11 @@ main { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
   background: var(--grad);
 }
 .nav__tools { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-.nav__music {
-  position: relative;
-  display: inline-grid;
-  place-items: center;
-  flex: none;
-  width: 36px; height: 36px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--card);
-  color: var(--ink-2);
-  cursor: pointer;
-  transition: color .2s, border-color .2s, transform .2s;
-}
-.nav__music:hover, .nav__music[aria-expanded="true"] { color: var(--accent); border-color: var(--accent); transform: translateY(-1px); }
-.nav__music.is-playing::after {
-  content: "";
-  position: absolute;
-  top: 5px; right: 5px;
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: #22c55e;
-  animation: pulse 2s infinite;
-}
-
-/* ---------- playlist drawer ---------- */
+/* ---------- playlist drawer (anchored under the music pill, top right) ---------- */
 .drawer {
   position: fixed;
   top: calc(var(--nav-h) + 8px);
-  left: 16px;
+  right: 16px;
   z-index: 70;
   display: flex;
   flex-direction: column;
@@ -252,7 +228,8 @@ main { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
   box-shadow: var(--shadow-lg);
   overflow: hidden;
   opacity: 0;
-  transform: translate(-14px, -6px);
+  transform: translate(0, -8px) scale(.98);
+  transform-origin: top right;
   transition: opacity .25s ease, transform .3s cubic-bezier(.2, .7, .2, 1);
 }
 .drawer.is-open { opacity: 1; transform: none; }
@@ -869,35 +846,58 @@ main { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 .footer__music { margin: 10px 0 0; font-size: 12px; color: var(--ink-3); }
 .footer__music a { color: var(--ink-2); }
 
-/* ---------- background music pill (lives in the nav tools, top right) ---------- */
+/* ---------- background music pill (nav tools, top right): play/pause on the left, playlist arrow on the right ---------- */
 .bgm {
   display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  align-items: stretch;
   height: 36px;
-  padding: 0 12px 0 10px;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--card);
+  overflow: hidden;
+  transition: border-color .2s, transform .2s;
+}
+.bgm:hover { border-color: var(--accent); transform: translateY(-1px); }
+.bgm:has(.is-playing) { border-color: rgba(var(--net), .45); }
+.bgm__main {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 0;
+  background: none;
   color: var(--ink-2);
   font: 500 12px var(--font);
   cursor: pointer;
-  transition: transform .2s, border-color .2s, color .2s;
+  transition: background .2s;
 }
-.bgm:hover { transform: translateY(-1px); border-color: var(--accent); }
-.bgm.is-playing { border-color: rgba(var(--net), .45); }
+.bgm__main:hover { background: var(--accent-soft); }
+.bgm__list {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  border: 0;
+  border-left: 1px solid var(--line);
+  background: none;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.bgm__list:hover, .bgm__list[aria-expanded="true"] { color: var(--accent); background: var(--accent-soft); }
+.bgm__list svg { transition: transform .25s; }
+.bgm__list[aria-expanded="true"] svg { transform: rotate(180deg); }
 .bgm__eq { display: inline-flex; align-items: flex-end; gap: 2px; width: 16px; height: 14px; }
 .bgm__eq i { width: 3px; height: 4px; border-radius: 2px; background: var(--grad); transition: height .3s; }
-.bgm.is-playing .bgm__eq i { animation: eq 1s ease-in-out infinite; }
-.bgm.is-playing .bgm__eq i:nth-child(2) { animation-delay: -.25s; }
-.bgm.is-playing .bgm__eq i:nth-child(3) { animation-delay: -.5s; }
-.bgm.is-playing .bgm__eq i:nth-child(4) { animation-delay: -.75s; }
+.bgm__main.is-playing .bgm__eq i { animation: eq 1s ease-in-out infinite; }
+.bgm__main.is-playing .bgm__eq i:nth-child(2) { animation-delay: -.25s; }
+.bgm__main.is-playing .bgm__eq i:nth-child(3) { animation-delay: -.5s; }
+.bgm__main.is-playing .bgm__eq i:nth-child(4) { animation-delay: -.75s; }
 @keyframes eq { 0%, 100% { height: 4px; } 50% { height: 14px; } }
 .bgm__text { display: grid; line-height: 1.15; text-align: left; white-space: nowrap; }
 .bgm__title { font-weight: 600; color: var(--ink); }
 .bgm__state { font: 500 10px var(--mono); color: var(--ink-3); }
-.bgm.is-playing .bgm__state { color: var(--accent); }
-.bgm.is-loading .bgm__state { animation: blink 1s steps(1) infinite; }
+.bgm__main.is-playing .bgm__state { color: var(--accent); }
+.bgm__main.is-loading .bgm__state { animation: blink 1s steps(1) infinite; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 980px) {
@@ -925,9 +925,10 @@ main { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
   .tl__card { padding: 18px; }
   .contact__inner { padding: 44px 20px; }
   .footer__row { flex-direction: column; }
-  .bgm { gap: 6px; padding: 0 10px 0 9px; }
+  .bgm__main { gap: 6px; padding: 0 9px; }
+  .bgm__list { width: 26px; }
   .bgm__title { font-size: 11.5px; }
-  .drawer { left: 12px; top: calc(var(--nav-h) + 6px); }
+  .drawer { right: 12px; top: calc(var(--nav-h) + 6px); }
 }
 @media (max-width: 900px) {
   .bgm__state { display: none; }
