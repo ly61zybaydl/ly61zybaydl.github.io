@@ -39,7 +39,7 @@ Hi, I am YiLiu(刘亿），a undergradute student at Huazhong University of Scie
 
 # 🎖 Honors and Awards
 
-- 自强奋进奖学金-2026年
+- Self-Improvement and Endeavor Scholarship, 2026
 
 # 📖 Educations
 
