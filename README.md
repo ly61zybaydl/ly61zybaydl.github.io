@@ -24,6 +24,10 @@ repository as-is because of the `.nojekyll` file.
 - To add a publication or project, copy one `<article class="pub">` block in `index.html`, set its
   `data-tags` (used by the filter buttons: `first`, `llm`, `code`, `oss`) and add Chinese summary keys if needed.
 - To add an experience, copy one `<li class="tl">` block inside the timeline.
+- **Hobbies** are expandable cards in the `#hobbies` section. To add a sticker, drop the file into
+  `images/hobbies/cartoon/` and add one `<li><img …></li>` inside that card's `<ul class="stickers">`
+  (3 per row, two rows visible, the box scrolls). Update the count text (`hob.c1m` in `index.html`
+  and the `ZH` dictionary). A new hobby is a copy of one `<article class="hobby">` block.
 - To add a **background music** track, drop the file into `assets/audio/` and copy one
   `<li class="track">` row inside the playlist drawer in `index.html` (set `data-src`, the title, the
   artist and the duration text). The order of the rows is the play order; the list loops.

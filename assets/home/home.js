@@ -31,7 +31,7 @@
 
   /* ---------------- language (EN / 中文) ---------------- */
   var ZH = {
-    'nav.about': '关于', 'nav.exp': '经历', 'nav.pub': '论文', 'nav.hon': '荣誉', 'nav.con': '联系', 'nav.cv': '简历',
+    'nav.about': '关于', 'nav.exp': '经历', 'nav.pub': '论文', 'nav.hon': '荣誉', 'nav.hob': '兴趣', 'nav.con': '联系', 'nav.cv': '简历',
 
     'hero.callout': '<strong>2027 年秋将在华中科技大学攻读硕士。</strong>欢迎交流与合作，随时联系我！',
     'hero.tag': '我希望大语言模型能',
@@ -85,6 +85,11 @@
     'hon.h': '荣誉与技能', 'hon.t1': '自强奋进奖学金', 'hon.o1': '华中科技大学',
     'sk.h1': '编程语言', 'sk.h2': '工具与框架', 'sk.h3': '研究兴趣',
     'sk.i1': '大语言模型', 'sk.i2': '强化学习', 'sk.i3': '推理效率', 'sk.i4': '自我进化', 'sk.i5': '扩散语言模型', 'sk.i6': '智能体工具控制',
+
+    'hob.h': '兴趣爱好',
+    'hob.c1k': '动画', 'hob.c1m': '55 张表情 · 点击展开',
+    'hob.c2k': '游戏', 'hob.c2m': '1 张图 · 点击展开',
+    'hob.scroll': '每行 3 张，框内下滑可看更多',
 
     'con.e': '<span class="dot"></span> 欢迎合作 · 2027 年秋起在华科攻读硕士',
     'con.t': '让大模型想得<br><span class="grad">更聪明，而不只是更久。</span>',
@@ -273,6 +278,26 @@
     }
     render();
   })();
+
+  /* ---------------- hobbies: expandable sticker grids (3 per row, two rows visible, scroll for more) ---------------- */
+  $$('.hobby').forEach(function (card) {
+    var head = $('.hobby__head', card), panel = $('.hobby__panel', card), box = $('.hobby__scroll', card);
+    if (!head || !panel) return;
+    function fit() {
+      var grid = $('.stickers', panel), tile = $('.stickers li', panel);
+      if (!box || !grid || !tile) return;
+      var gap = parseFloat(getComputedStyle(grid).rowGap) || 12;
+      box.style.maxHeight = (tile.offsetHeight * 2 + gap + 8) + 'px';
+    }
+    head.addEventListener('click', function () {
+      var open = head.getAttribute('aria-expanded') === 'true';
+      head.setAttribute('aria-expanded', open ? 'false' : 'true');
+      panel.hidden = open;
+      card.classList.toggle('is-open', !open);
+      if (!open) fit();
+    });
+    window.addEventListener('resize', function () { if (!panel.hidden) fit(); });
+  });
 
   /* ---------------- scroll: progress, nav state, timeline fill ---------------- */
   var nav = $('#nav');
