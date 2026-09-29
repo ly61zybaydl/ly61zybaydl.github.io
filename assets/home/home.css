@@ -793,7 +793,7 @@ main { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 .tags .tag:hover { transform: translateY(-2px); border-color: var(--accent); color: var(--accent); }
 
 /* hobbies */
-.hobbies { display: grid; gap: 16px; }
+.hobbies { display: grid; gap: 18px; }
 .hobby {
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -802,23 +802,15 @@ main { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
   overflow: hidden;
   transition: border-color .3s, box-shadow .3s;
 }
-.hobby:hover, .hobby.is-open { border-color: rgba(var(--net), .35); box-shadow: var(--shadow-lg); }
+.hobby:hover { border-color: rgba(var(--net), .35); box-shadow: var(--shadow-lg); }
 .hobby__head {
   display: grid;
   grid-template-columns: 48px 1fr auto;
   align-items: center;
   gap: 14px;
-  width: 100%;
   padding: 16px 20px;
-  border: 0;
-  background: none;
-  color: var(--ink);
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition: background .2s;
+  border-bottom: 1px solid var(--line);
 }
-.hobby__head:hover { background: var(--accent-soft); }
 .hobby__icon {
   display: grid;
   place-items: center;
@@ -827,16 +819,26 @@ main { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
   background: var(--accent-soft);
   font-size: 24px;
 }
-.hobby__icon img { width: 32px; height: 32px; border-radius: 8px; }
 .hobby__text { display: grid; line-height: 1.25; min-width: 0; }
 .hobby__kicker { font: 600 11.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
 .hobby__title { font: 700 1.08rem var(--display); color: var(--ink); }
-.hobby__meta { display: inline-flex; align-items: center; gap: 10px; font: 500 12.5px var(--mono); color: var(--ink-3); white-space: nowrap; }
-.hobby__meta svg { transition: transform .25s; color: var(--ink-3); }
-.hobby__head[aria-expanded="true"] .hobby__meta svg { transform: rotate(180deg); color: var(--accent); }
-.hobby__panel { padding: 0 20px 18px; border-top: 1px solid var(--line); animation: panel-in .35s cubic-bezier(.2, .7, .2, 1) both; }
-@keyframes panel-in { from { opacity: 0; transform: translateY(-6px); } }
-.hobby__scroll { margin-top: 16px; max-height: 60vh; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; border-radius: 14px; }
+.hobby__meta { font: 500 12.5px var(--mono); color: var(--ink-3); white-space: nowrap; }
+.hobby__body { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 18px; align-items: start; padding: 18px 20px; }
+.hobby__body--game { grid-template-columns: 220px minmax(0, 1fr); align-items: center; }
+.hobby__feature {
+  margin: 0;
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: radial-gradient(120% 110% at 30% 15%, rgba(var(--net), .18), transparent 60%), var(--bg-2);
+  overflow: hidden;
+}
+.hobby__feature img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; padding: 14px; }
+.hobby__feature--icon { aspect-ratio: 1; min-height: 0; }
+.hobby__feature--icon img { width: 74%; padding: 0; border-radius: 22%; box-shadow: 0 20px 40px -18px rgba(0, 0, 0, .65); }
+.hobby__scroll { overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; border-radius: 14px; }
 .stickers {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -857,7 +859,48 @@ main { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 }
 .stickers li:hover { transform: translateY(-3px) scale(1.02); border-color: rgba(var(--net), .45); }
 .stickers img { width: 100%; height: 100%; object-fit: contain; }
-.hobby__hint { margin: 12px 0 0; font: 500 12px var(--mono); color: var(--ink-3); text-align: center; }
+
+/* screenshot carousel */
+.carousel { position: relative; min-width: 0; outline-offset: 4px; }
+.carousel__viewport {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg-2);
+}
+.carousel__viewport::-webkit-scrollbar { display: none; }
+.carousel__track { display: flex; list-style: none; margin: 0; padding: 0; }
+.carousel__track li { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; }
+.carousel__track img { display: block; width: 100%; height: auto; }
+.carousel__label { display: block; padding: 8px 12px; border-top: 1px solid var(--line); background: var(--card); font: 500 12px var(--mono); color: var(--ink-3); text-align: center; }
+.carousel__btn {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 38px; height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--card) 86%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transform: translateY(-70%);
+  transition: color .2s, border-color .2s, transform .2s;
+}
+.carousel__btn:hover { color: var(--accent); border-color: var(--accent); transform: translateY(-70%) scale(1.06); }
+.carousel__btn--prev { left: 10px; }
+.carousel__btn--next { right: 10px; }
+.carousel__dots { display: flex; justify-content: center; gap: 7px; margin-top: 10px; }
+.carousel__dot { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: var(--line); cursor: pointer; transition: background .2s, transform .2s; }
+.carousel__dot.is-active { background: var(--accent); transform: scale(1.3); }
+.hobby__caption { margin: 0; padding: 14px 20px 18px; border-top: 1px solid var(--line); font-size: 15px; color: var(--ink); }
+.hobby__caption small { display: block; margin-top: 3px; font-size: 12.5px; color: var(--ink-3); }
 
 /* contact */
 .contact { padding-bottom: 60px; }
@@ -991,11 +1034,16 @@ main { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
   .tl__node { left: -26px; }
   .tl__card { padding: 18px; }
   .contact__inner { padding: 44px 20px; }
-  .hobby__head { grid-template-columns: 40px 1fr auto; gap: 10px; padding: 14px 14px; }
+  .hobby__head { grid-template-columns: 40px 1fr; gap: 10px; padding: 14px; }
   .hobby__icon { width: 40px; height: 40px; font-size: 20px; }
-  .hobby__meta span { display: none; }
-  .hobby__panel { padding: 0 14px 14px; }
+  .hobby__meta { display: none; }
+  .hobby__body, .hobby__body--game { grid-template-columns: 1fr; gap: 12px; padding: 14px; }
+  .hobby__feature { min-height: 0; }
+  .hobby__feature--sync img { height: 236px; width: auto; max-width: 100%; }
+  .hobby__feature--icon { width: 150px; margin: 0 auto; }
   .stickers { gap: 8px; }
+  .carousel__btn { width: 32px; height: 32px; }
+  .hobby__caption { padding: 12px 14px 14px; font-size: 14px; }
   .footer__row { flex-direction: column; }
   .bgm__main { gap: 6px; padding: 0 9px; }
   .bgm__list { width: 26px; }

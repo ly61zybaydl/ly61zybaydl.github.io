@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-  <link rel="stylesheet" href="assets/home/home.css?v=20260929a">
+  <link rel="stylesheet" href="assets/home/home.css?v=20260929b">
   <script>
     /* Apply the saved theme / language before first paint to avoid a flash. */
     (function () {
@@ -418,16 +418,17 @@
       </div>
       <div class="hobbies">
         <article class="hobby reveal" id="hobby-cartoon">
-          <button class="hobby__head" type="button" aria-expanded="false" aria-controls="hobby-cartoon-panel">
+          <div class="hobby__head">
             <span class="hobby__icon" aria-hidden="true">🐲</span>
-            <span class="hobby__text">
+            <div class="hobby__text">
               <span data-i18n="hob.c1k" class="hobby__kicker">Cartoon</span>
               <span class="hobby__title">奶龙 · Nailong</span>
-            </span>
-            <span class="hobby__meta"><span data-i18n="hob.c1m">55 stickers · tap to expand</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
-          </button>
-          <div class="hobby__panel" id="hobby-cartoon-panel" hidden>
-            <div class="hobby__scroll">
+            </div>
+            <span data-i18n="hob.c1m" class="hobby__meta">55 stickers · scroll the wall</span>
+          </div>
+          <div class="hobby__body">
+            <figure class="hobby__feature hobby__feature--sync"><img src="images/hobbies/cartoon/nailong-hero.png" alt="奶龙 Nailong waving hello" loading="lazy" decoding="async"></figure>
+            <div class="hobby__scroll" tabindex="0" aria-label="Nailong sticker wall, scroll for more">
               <ul class="stickers">
                 <li><img src="images/hobbies/cartoon/nailong-01.jpg" alt="奶龙 sticker 1" loading="lazy" decoding="async"></li>
                 <li><img src="images/hobbies/cartoon/nailong-02.gif" alt="奶龙 sticker 2" loading="lazy" decoding="async"></li>
@@ -486,26 +487,34 @@
                 <li><img src="images/hobbies/cartoon/nailong-55.gif" alt="奶龙 sticker 55" loading="lazy" decoding="async"></li>
               </ul>
             </div>
-            <p data-i18n="hob.scroll" class="hobby__hint">3 per row · scroll inside the box for more</p>
           </div>
         </article>
 
         <article class="hobby reveal" id="hobby-game">
-          <button class="hobby__head" type="button" aria-expanded="false" aria-controls="hobby-game-panel">
+          <div class="hobby__head">
             <span class="hobby__icon" aria-hidden="true">🎮</span>
-            <span class="hobby__text">
+            <div class="hobby__text">
               <span data-i18n="hob.c2k" class="hobby__kicker">Game</span>
               <span class="hobby__title">王者荣耀 · Honor of Kings</span>
-            </span>
-            <span class="hobby__meta"><span data-i18n="hob.c2m">1 image · tap to expand</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
-          </button>
-          <div class="hobby__panel" id="hobby-game-panel" hidden>
-            <div class="hobby__scroll">
-              <ul class="stickers">
-                <li><img src="images/hobbies/game/honor-of-kings.png" alt="王者荣耀 Honor of Kings app icon" width="512" height="512" loading="lazy" decoding="async"></li>
-              </ul>
+            </div>
+            <span data-i18n="hob.c2m" class="hobby__meta">3 screenshots · ‹ › to switch</span>
+          </div>
+          <div class="hobby__body hobby__body--game">
+            <figure class="hobby__feature hobby__feature--icon"><img src="images/hobbies/game/honor-of-kings.png" alt="王者荣耀 Honor of Kings app icon" width="512" height="512" loading="lazy" decoding="async"></figure>
+            <div class="carousel" id="game-carousel" tabindex="0" aria-roledescription="carousel" aria-label="Honor of Kings screenshots">
+              <button class="carousel__btn carousel__btn--prev" type="button" aria-label="Previous screenshot"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button>
+              <div class="carousel__viewport">
+                <ul class="carousel__track">
+                  <li><img src="images/hobbies/game/profile.jpg" alt="王者荣耀 个人主页 · in-game profile" width="1568" height="706" loading="lazy" decoding="async"><span class="carousel__label">个人主页 · Profile</span></li>
+                  <li><img src="images/hobbies/game/ranked.jpg" alt="王者荣耀 排位赛 起源之地 S38–S41 · ranked seasons" width="1568" height="706" loading="lazy" decoding="async"><span class="carousel__label">排位赛 · Ranked (S38–S41)</span></li>
+                  <li><img src="images/hobbies/game/peak.jpg" alt="王者荣耀 巅峰赛 巅峰历程 S40–S44 · peak seasons" width="1568" height="706" loading="lazy" decoding="async"><span class="carousel__label">巅峰赛 · Peak (S40–S44)</span></li>
+                </ul>
+              </div>
+              <button class="carousel__btn carousel__btn--next" type="button" aria-label="Next screenshot"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+              <div class="carousel__dots" aria-hidden="true"><button class="carousel__dot is-active" type="button" tabindex="-1"></button><button class="carousel__dot" type="button" tabindex="-1"></button><button class="carousel__dot" type="button" tabindex="-1"></button></div>
             </div>
           </div>
+          <p data-i18n="hob.gcap" class="hobby__caption">我分路全能，很擅长辅助哦，欢迎加我好友一起玩，我会保护好你哦<small>I can play every lane and I'm especially good at support. Add me in game and let's play together, I'll keep you safe!</small></p>
         </article>
       </div>
     </section>
@@ -534,6 +543,6 @@
     <p data-i18n="foot.music" class="footer__music">♪ Background music: the pill at the top right plays or pauses, its arrow opens the playlist</p>
   </footer>
 
-  <script src="assets/home/home.js?v=20260929a"></script>
+  <script src="assets/home/home.js?v=20260929b"></script>
 </body>
 </html>

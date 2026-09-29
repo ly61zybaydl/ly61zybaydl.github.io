@@ -24,10 +24,12 @@ repository as-is because of the `.nojekyll` file.
 - To add a publication or project, copy one `<article class="pub">` block in `index.html`, set its
   `data-tags` (used by the filter buttons: `first`, `llm`, `code`, `oss`) and add Chinese summary keys if needed.
 - To add an experience, copy one `<li class="tl">` block inside the timeline.
-- **Hobbies** are expandable cards in the `#hobbies` section. To add a sticker, drop the file into
-  `images/hobbies/cartoon/` and add one `<li><img …></li>` inside that card's `<ul class="stickers">`
-  (3 per row, two rows visible, the box scrolls). Update the count text (`hob.c1m` in `index.html`
-  and the `ZH` dictionary). A new hobby is a copy of one `<article class="hobby">` block.
+- **Hobbies** live in the `#hobbies` section. The cartoon card shows a feature image on the left and a
+  scrollable sticker wall on the right (3 per row, two rows visible): to add a sticker, drop the file into
+  `images/hobbies/cartoon/` and add one `<li><img …></li>` inside `<ul class="stickers">`, then update the
+  count text (`hob.c1m` in `index.html` and the `ZH` dictionary). The game card shows the app icon on the
+  left and a screenshot carousel on the right: add a screenshot as one more `<li>` in
+  `<ul class="carousel__track">` plus one `<button class="carousel__dot">`.
 - To add a **background music** track, drop the file into `assets/audio/` and copy one
   `<li class="track">` row inside the playlist drawer in `index.html` (set `data-src`, the title, the
   artist and the duration text). The order of the rows is the play order; the list loops.

@@ -87,9 +87,9 @@
     'sk.i1': '大语言模型', 'sk.i2': '强化学习', 'sk.i3': '推理效率', 'sk.i4': '自我进化', 'sk.i5': '扩散语言模型', 'sk.i6': '智能体工具控制',
 
     'hob.h': '兴趣爱好',
-    'hob.c1k': '动画', 'hob.c1m': '55 张表情 · 点击展开',
-    'hob.c2k': '游戏', 'hob.c2m': '1 张图 · 点击展开',
-    'hob.scroll': '每行 3 张，框内下滑可看更多',
+    'hob.c1k': '动画', 'hob.c1m': '55 张表情 · 可滑动查看',
+    'hob.c2k': '游戏', 'hob.c2m': '3 张截图 · 左右切换',
+    'hob.gcap': '我分路全能，很擅长辅助哦，欢迎加我好友一起玩，我会保护好你哦',
 
     'con.e': '<span class="dot"></span> 欢迎合作 · 2027 年秋起在华科攻读硕士',
     'con.t': '让大模型想得<br><span class="grad">更聪明，而不只是更久。</span>',
@@ -279,25 +279,49 @@
     render();
   })();
 
-  /* ---------------- hobbies: expandable sticker grids (3 per row, two rows visible, scroll for more) ---------------- */
+  /* ---------------- hobbies: sticker wall (two rows visible, scrolls) + screenshot carousel ---------------- */
   $$('.hobby').forEach(function (card) {
-    var head = $('.hobby__head', card), panel = $('.hobby__panel', card), box = $('.hobby__scroll', card);
-    if (!head || !panel) return;
+    var grid = $('.stickers', card), box = $('.hobby__scroll', card), feat = $('.hobby__feature--sync', card);
+    if (!grid || !box) return;
     function fit() {
-      var grid = $('.stickers', panel), tile = $('.stickers li', panel);
-      if (!box || !grid || !tile) return;
+      var tile = $('li', grid);
+      if (!tile) return;
       var gap = parseFloat(getComputedStyle(grid).rowGap) || 12;
-      box.style.maxHeight = (tile.offsetHeight * 2 + gap + 8) + 'px';
+      var h = tile.offsetHeight * 2 + gap + 4;
+      box.style.height = h + 'px';
+      if (feat) feat.style.height = window.innerWidth > 720 ? h + 'px' : '';
     }
-    head.addEventListener('click', function () {
-      var open = head.getAttribute('aria-expanded') === 'true';
-      head.setAttribute('aria-expanded', open ? 'false' : 'true');
-      panel.hidden = open;
-      card.classList.toggle('is-open', !open);
-      if (!open) fit();
-    });
-    window.addEventListener('resize', function () { if (!panel.hidden) fit(); });
+    fit();
+    window.addEventListener('resize', fit);
+    window.addEventListener('load', fit);
   });
+  (function () {
+    var c = $('#game-carousel');
+    if (!c) return;
+    var vp = $('.carousel__viewport', c), slides = $$('.carousel__track > li', c), dots = $$('.carousel__dot', c), cur = 0, timer;
+    function mark(i) {
+      cur = i;
+      dots.forEach(function (d, k) { d.classList.toggle('is-active', k === i); });
+    }
+    function go(i) {
+      i = (i + slides.length) % slides.length;
+      vp.scrollTo({ left: i * vp.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
+      mark(i);
+    }
+    $('.carousel__btn--prev', c).addEventListener('click', function () { go(cur - 1); });
+    $('.carousel__btn--next', c).addEventListener('click', function () { go(cur + 1); });
+    dots.forEach(function (d, k) { d.addEventListener('click', function () { go(k); }); });
+    vp.addEventListener('scroll', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { mark(Math.round(vp.scrollLeft / Math.max(1, vp.clientWidth))); }, 80);
+    }, { passive: true });
+    c.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { go(cur - 1); e.preventDefault(); }
+      if (e.key === 'ArrowRight') { go(cur + 1); e.preventDefault(); }
+    });
+    window.addEventListener('resize', function () { vp.scrollTo({ left: cur * vp.clientWidth }); });
+    mark(0);
+  })();
 
   /* ---------------- scroll: progress, nav state, timeline fill ---------------- */
   var nav = $('#nav');
