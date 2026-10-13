@@ -53,6 +53,47 @@ repository as-is because of the `.nojekyll` file.
 - Typewriter tagline and an illustrative "ActionRAG router" demo in the hero
 - Animated background with four styles: fireflies (default), flow field, network, aurora (disabled when the OS asks for reduced motion)
 
+## Visitor analytics (off by default)
+
+`assets/home/analytics.js` is wired into the page but **disabled**: with the IDs empty it
+returns immediately and loads no third-party code, so nothing about your visitors leaves
+the page. Fill in an ID to turn it on.
+
+GitHub Pages is plain static hosting, so it keeps no access log and the repository's own
+Traffic tab counts repository page views only (never the deployed site). Visit data comes
+from a third-party service, which means registering an account and pasting two values.
+
+| Question | Service | What you get |
+| --- | --- | --- |
+| "who was that, which network?" | **Statcounter** (recommended) | per-visit log: time, city/country, ISP or organization (e.g. a university), IP, referrer, visit length |
+| "how many, from where?" | GoatCounter | pageviews by page, referrer, country; no IP stored |
+| "what did they actually do?" | Microsoft Clarity | session replays and heatmaps; country-level location only |
+
+**Statcounter setup** — the free plan covers 5,000 sessions/month with 14-day retention and a
+500-entry visitor log, and the counter can be invisible:
+
+1. Register at <https://statcounter.com/> and add a project for `ly61zybaydl.github.io`.
+2. The install page shows a snippet with two values, e.g. `var sc_project=12345678;` and
+   `var sc_security="a1b2c3d4";`.
+3. Paste them into `assets/home/analytics.js` under `statcounter`, set `enabled: true`, and
+   bump the `?v=` on the `analytics.js` script tag in `index.html`.
+4. Open the site from your phone on mobile data, then check *Recent Visitor Activity* — if
+   your own visit appears, the beacon works.
+
+**Keeping your own visits out** — local preview is ignored automatically (`trackLocal: false`).
+To exclude a deployed visit, add `?notrack=1` to the URL, or install the service's blocking
+cookie (Statcounter offers one; it is the reliable way to keep your own browsing out of the
+numbers on any device you use).
+
+**What this cannot do**: it never reveals a name. A visitor's identity is not available to any
+of these services, and a page cannot read it. The closest signal is the network a visit came
+from, which is often enough on an academic page (a university network is visible as such).
+Visits made through a VPN or a mobile carrier show the VPN or carrier instead.
+
+Personal data note: Statcounter logs IP addresses, so visitors in the EU/UK may be covered by
+GDPR. If that matters to you, add one line to the footer saying the site uses Statcounter —
+`data-i18n` for the Chinese version lives in the `ZH` dictionary in `home.js`.
+
 ## Local preview
 
 ```bash
